@@ -5,7 +5,7 @@ This course is designed for complete beginners who want to learn bug bounty hunt
 
 ### Prerequisites
 - **Computer Requirements**: Minimum 4GB RAM (8GB recommended)
-- **Operating System**: Kali Linux (installation video provided in description)
+- **Operating System**: Kali Linux
 - **Skills Required**: None! No programming languages, web hacking experience, or prior knowledge needed
 
 ---
