@@ -1,6 +1,6 @@
-## https://youtu.be/cbzYtBFjqtU
-
 # Bug Bounty Beginner Roadmap — Course Notes
+
+## https://youtu.be/cbzYtBFjqtU
 
 > Source: Cybersecurity course video (Bug Bounty Roadmap for Beginners)
 > Format: Structured notes for revision

