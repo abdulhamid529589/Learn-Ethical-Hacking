@@ -438,191 +438,6 @@ apt install <package-name>   # install/update a package
 ```
 > If APT fails to find packages, check `/etc/apt/sources.list` and ensure the `deb-src` line is uncommented.
 
----
-
-## 11. Information Gathering (Footprinting & Reconnaissance)
-
-### 11.1 Why Information Gathering Matters
-The **first phase** of any authorized security assessment. Illustrated by a comparison: a hacker who spends a week blindly trying every known exploit may fail, while a hacker who spends half a day gathering target information (OS type + version) can look up known CVEs for that exact version and succeed in one attempt. Key takeaways:
-- Efficiency and effectiveness both improve dramatically with good recon.
-- It is the **foundation** of the entire security assessment process — without it, testing is unfocused guesswork.
-- Helps testers stay stealthy/low-profile while gathering data.
-
-### 11.2 Active vs Passive Information Gathering
-
-| Type | Description | Example |
-|---|---|---|
-| **Active** | Direct interaction/engagement with the target | Sending a friend request (even from a fake profile), pinging a host, direct network probing |
-| **Passive** | Indirect, no direct interaction | Browsing a public social media profile without following/reacting |
-
-### 11.3 Search Engines & Google Dorking
-
-**Rule of thumb:** Never rely only on page 1 of search results — search engines optimize for what companies/SEO want you to see, not necessarily what's most useful. Always browse through multiple pages and add specific contextual keywords (e.g., a person's name + relevant field like "cyber security") to surface more targeted, lower-visibility results.
-
-**Google Dorking / Advanced Search Operators** — using Google's Advanced Search form (or manual operator syntax) to precisely filter results:
-
-| Operator | Purpose |
-|---|---|
-| Plain words | All these words should appear |
-| `"exact phrase"` | Exact word/phrase match (high priority) |
-| `word1 OR word2` | Match any of these words |
-| `-word` | Exclude a word from results |
-| `site:example.com` | Restrict results to a specific site/domain |
-| `filetype:pdf` | Restrict results to a specific file type |
-| Number range | Filter by number ranges (dates, prices, etc.) |
-
-*Example dork used in class:* `"Ashish" admin Instagram Facebook -Linkedin site:facebook.com` — illustrating how combining exact-match, OR-terms, exclusions, and site restriction narrows/broadens results as needed.
-
-### 11.4 OSINT Framework
-A curated web directory (`osintframework.com`-style resource) organizing OSINT tools by category (Username, Email, Domain, etc.), each with sub-branches (WHOIS records, subdomains, DNS discovery, etc.) linking out to specific free tools/services for each type of lookup.
-
-*Example use:* Selecting Domain → WHOIS Record led to a tool where entering a target domain returned:
-- WHOIS record (registrant info, phone/contact)
-- Network WHOIS (hosting provider, e.g., AWS)
-- DNS Records (A, TXT, MX, NS, PTR, SOA)
-- Traceroute (path/hops + IPs a packet travels through to reach the server)
-- Basic open-port/service-version scan results
-
-### 11.5 Shodan
-**Shodan** is a specialized search engine that indexes internet-connected devices/services (a common OSINT tool for reconnaissance and internet-wide asset discovery).
-- Requires free registration (with email verification) to use.
-- Provides an **API key** (found under "My Account") that can be used to integrate Shodan into other tools.
-
-### 11.6 theHarvester Tool
-**theHarvester** is a popular open-source OSINT/reconnaissance tool (comes pre-installed on Kali Linux) that aggregates data about a domain from many public sources (search engines, Shodan, etc.) in one command.
-
-**Setup:** Add API keys (e.g., Shodan) to its config file at `/etc/theHarvester/api-keys.yaml`.
-
-**Basic usage syntax:**
-```bash
-theHarvester -d <target-domain> -b all -l 100
-```
-- `-d` → target domain
-- `-b` → data source(s) to query (`all` = every configured source)
-- `-l` → limit number of results (helps avoid hitting API rate limits)
-- `-f <filename>` → save results to a file
-
-> Run `theHarvester --help` to see all supported source names/flags.
-
----
-
-## 12. Network Scanning & Enumeration (Nmap)
-
-### 12.1 Five Goals of Network Scanning
-Once a target's IP is known, active network scanning aims to answer five questions:
-
-1. **Host Discovery** — Is the target's IP active/reachable?
-2. **Port Discovery** — Which of the 65,536 ports are open?
-3. **Service Discovery** — Which protocol/service runs on each open port (e.g., HTTP on port 80)?
-4. **Software & Version Discovery** — Which specific software manages that service, and what version (e.g., Apache 2.2.8)?
-5. **OS Discovery ("Banner Grabbing")** — What operating system (and version) is the target running?
-
-> **Banner Grabbing** = capturing the introductory "banner" text a service/software displays when connected to, which often reveals its name and version.
-
-### 12.2 Practical Nmap Scanning
-
-**Local network host discovery:**
-```bash
-netdiscover                       # Scans the local subnet and lists active IPs (LAN only)
-ifconfig                          # Check your own IP/interface details
-```
-
-**Comprehensive scan covering all 5 goals:**
-```bash
-nmap -p 1-65535 -v <target-ip> -sV -O
-```
-| Flag | Meaning |
-|---|---|
-| `-p 1-65535` | Scan the full port range |
-| `-v` | Verbose output (explains what Nmap is doing) |
-| `-sV` | Service/version detection (software name + version) |
-| `-O` | OS detection/fingerprinting |
-
-**Interpreting results:** Output lists each port's status (open/closed/filtered), the service name, and (with `-sV`) the software + version string. Combined with `-O`, Nmap also estimates OS family and version range.
-
-### 12.3 Enumeration with NSE Scripts
-
-**Enumeration** = going deeper than basic scanning, using Nmap's built-in **NSE (Nmap Scripting Engine)** scripts to extract more detailed, service-specific information from open ports (configuration data, banners, sometimes default-credential checks, etc.). NSE scripts are stored at:
-```bash
-/usr/share/nmap/scripts/
-```
-Scripts are named by the protocol they target (e.g., all FTP-related scripts start with `ftp-`, all HTTP-related scripts start with `http-`, etc.)
-
-**Two approaches:**
-
-1. **Automated/Default Script Scan** — runs Nmap's default script for whichever service is detected on each open port automatically:
-```bash
-nmap -p 1-65535 -v <target-ip> -sV -sC -O
-```
-`-sC` = run the default NSE script set against discovered services.
-
-2. **Manual/Targeted Script Scan** — explicitly choose which script(s) to run against a specific port using wildcard matching on the script name prefix:
-```bash
-nmap <target-ip> -p <port> -sV --script="smtp*"
-```
-This example targets port 25 (SMTP) and runs every NSE script whose name starts with `smtp` (there are several, each probing a different aspect: default settings, relay/open-relay checks, user enumeration, etc.) — giving much more thorough results than the automated single-script default scan.
-
-> **General workflow:** Basic scan (5 goals) → identify open ports/services → run automated NSE scan for a quick pass → run manual, protocol-specific NSE scripts against each interesting port for deeper enumeration → document findings for the assessment report.
-
----
-
-## 13. Metasploit Framework & Armitage (Overview)
-
-### What is Metasploit?
-**Metasploit Framework (MSF)** is a widely used, industry-standard **penetration testing framework** containing large collections of modules organized into categories:
-
-| Module Type | Purpose |
-|---|---|
-| **Auxiliary** | Enumeration/scanning-support modules (Metasploit's equivalent of Nmap's NSE scripts) — used for deeper reconnaissance, not exploitation |
-| **Exploits** | Modules that leverage a *known, already-identified* vulnerability/misconfiguration to gain access to a system |
-| **Payloads** | Code delivered after successful exploitation to maintain access to the compromised system (e.g., reverse shell techniques) |
-
-### Basic Setup Concepts (as covered)
-- Metasploit stores project/scan data in a **PostgreSQL database** backend.
-```bash
-service postgresql start      # Start the database service
-msfdb init                    # Initialize/connect Metasploit's database
-msfconsole                    # Launch the Metasploit console (CLI)
-db_status                     # Verify DB connection inside msfconsole
-```
-- Nmap scans can be run *from within* Metasploit and their results stored directly in its database:
-```bash
-db_nmap -p 1-65535 -v -sV -O <target-ip>
-```
-
-### Armitage (GUI Front-End)
-**Armitage** is a graphical user interface built on top of the Metasploit Framework, making it easier to visualize scanned hosts, view discovered services, and manage modules without memorizing CLI syntax.
-```bash
-apt install armitage
-armitage
-```
-Within Armitage, discovered hosts appear as icons; right-clicking reveals options like viewing collected service/version data, and the module search panel lets a tester look up publicly known modules matching the detected software/version for further authorized testing within an assessment's defined scope.
-
-> **Important context:** All Metasploit/Armitage demonstrations in this course were performed against **Metasploitable2**, an intentionally vulnerable virtual machine distributed by Rapid7 specifically for legal training and practice — this is the same standard tool used across CEH/OSCP-style coursework worldwide. Any testing of real systems requires explicit written authorization.
-
----
-
-## 14. Lab Setup Notes
-
-### Recommended Lab Environment
-- **Virtualization software:** VirtualBox or VMware Workstation.
-- **Attacker machine:** Kali Linux (download the pre-built VM image from the official Kali website for the fastest setup, rather than a full ISO installation).
-- **Practice/target machine:** Metasploitable2 (also from Rapid7's official distribution) — a deliberately vulnerable Linux VM built for safe, legal practice.
-
-### Networking Setup Between VMs
-- Both VMs should be configured with matching **Network Adapter** settings in the hypervisor (e.g., a shared "Host-only Adapter" or "NAT + Host-only" combo) so they can reach each other on the same private subnet.
-- Default Kali VM login credentials on the pre-built image: `kali` / `kali` (always change these in any real deployment).
-
-### Android Lab (as covered)
-- Android-x86 ISO can be installed as a VM inside VirtualBox for practicing mobile app security concepts, with adjusted display/graphics controller settings if the default GUI doesn't render.
-- Alternatively, tools like **Termux** (a genuine terminal emulator app for Android, downloaded from its official F-Droid/GitHub release rather than the Play Store version, which can have outdated repositories) allow running a Linux-like command-line environment directly on a physical Android device for learning purposes.
-
----
-
-> If APT fails to find packages, check `/etc/apt/sources.list` and ensure the `deb-src` line is uncommented.
-
----
-
 ## 11. Information Gathering (Footprinting & Reconnaissance)
 
 ### 11.1 Why Information Gathering Matters
@@ -642,18 +457,28 @@ The **first phase** of any authorized security assessment. Illustrated by a comp
 
 **Rule of thumb:** Never rely only on page 1 of search results — search engines optimize for what companies/SEO want you to see, not necessarily what's most useful. Always browse through multiple pages and add specific contextual keywords (e.g., a person's name + relevant field) to surface more targeted, lower-visibility results.
 
-**Google Dorking / Advanced Search Operators** — using Google's Advanced Search form (or manual operator syntax) to precisely filter results:
+**Google Advanced Search / "Google Dorking"** — Google provides a structured **Advanced Search form** (`google.com/advanced_search`) that auto-generates the correct dork syntax for you. Each field maps to a specific search operator:
 
-| Operator | Purpose |
-|---|---|
-| Plain words | All these words should appear |
-| `"exact phrase"` | Exact word/phrase match (high priority) |
-| `word1 OR word2` | Match any of these words |
-| `-word` | Exclude a word from results |
-| `site:example.com` | Restrict results to a specific site/domain |
-| `filetype:pdf` | Restrict results to a specific file type |
-| Number range | Filter by number ranges (dates, prices, etc.) |
-| `intitle:` / `inurl:` / `intext:` | Restrict where the term must appear (page title, URL, or body text) |
+| Advanced Search Field | Generated Operator | Purpose |
+|---|---|---|
+| all these words | (plain words, space-separated) | Every listed word should appear somewhere in the result |
+| this exact word or phrase | `"word or phrase"` | Exact match — highest priority term, wrapped in quotes |
+| any of these words | `word1 OR word2 OR word3` | Match if *any one* of the listed words appears |
+| none of these words | `-word` | Exclude pages containing this word |
+| numbers ranging from | `number1..number2` | Filter by a numeric range (dates, prices, quantities) |
+| language | (locale filter) | Restrict results to a specific language |
+| region | (region filter) | Restrict results to a specific country/region |
+| last update | (freshness filter) | Restrict by how recently the page was updated (24h / week / month / year) |
+| site or domain | `site:example.com` | Restrict results to one specific site/domain |
+| terms appearing | `intitle:` / `inurl:` / `intext:` / `inlink:` | Restrict *where* the term must appear — page title, URL, body text, or in outbound links |
+| file type | `filetype:pdf` (or doc, xls, etc.) | Restrict results to a specific file type |
+| usage rights | (licensing filter) | Restrict to freely reusable/licensed content |
+
+**Manual (typed) dork syntax equivalent example used in class:**
+```
+"Ashish" (admin OR Instagram OR Facebook) -Linkedin site:facebook.com
+```
+This combines an exact-match term, an OR-group, an exclusion, and a site restriction — demonstrating how stacking operators progressively narrows a search. The instructor's key teaching point: **don't over-filter** — adding filters (like `site:`, `filetype:`, or a numeric range) that don't actually apply to your target will return *zero* useful results, so only apply a filter when you have a real reason to believe it will help.
 
 ### 11.4 OSINT Framework
 A curated web directory organizing OSINT tools by category (Username, Email, Domain, etc.), with sub-branches (WHOIS records, subdomains, DNS discovery) linking to specific free lookup tools.
@@ -744,6 +569,16 @@ Visualizes scanned hosts as icons; right-click to view collected data or search 
 
 > All Metasploit/Armitage demos in this course targeted **Metasploitable2**, Rapid7's official intentionally-vulnerable practice VM — standard across CEH/OSCP-style training worldwide. Real-world use requires explicit written authorization.
 
+### 13.1 Named Example: The vsftpd 2.3.4 Backdoor (Metasploitable2's Canonical Teaching CVE)
+
+Metasploitable2 intentionally ships with a very old, deliberately-backdoored version of **vsftpd 2.3.4** — this is likely the single most-referenced example in every entry-level penetration testing course, so it's worth naming explicitly for exam/certification revision purposes:
+
+- **Vulnerability:** `CVE-2011-2523` — a since-patched, publicly-disclosed backdoor that was maliciously inserted into the vsftpd 2.3.4 source archive between 2011-06-30 and 2011-07-03. This is over a decade old, was patched immediately in the real vsftpd project, and Metasploitable2 deliberately ships the *vulnerable, pre-patch* version purely as a training target.
+- **How it's typically found during a course:** an Nmap **version scan** (`-sV`) on port 21 reveals `vsftpd 2.3.4`; a student then looks up that exact version string and discovers it's a documented CVE.
+- **Conceptual mechanism:** the backdoor causes the FTP service to open an unauthenticated listener on **TCP port 1524** shortly after a malformed login attempt — any tool capable of a raw TCP connection (e.g., `netcat`) to that port receives a **root-privileged shell** on the vulnerable machine.
+- **Why this example is taught everywhere:** it's a clean, self-contained illustration of the full workflow (Scan → Identify version → Look up known CVE → Confirm via manual connection or a matching Metasploit exploit module) without requiring any custom exploit development — making it ideal for teaching the *process*, not just the tool.
+- **Real-world takeaway:** this specific bug has been patched for well over a decade; it has essentially **zero relevance to real-world/current systems** and exists purely as a safe, static training target. The actual lesson is the *general workflow* (version fingerprinting → CVE lookup → validated exploitation only within authorized scope), which transfers to any current CVE a tester might legitimately encounter during authorized work.
+
 ---
 
 ## 14. Wireless (Wi-Fi) Security Fundamentals
@@ -793,11 +628,34 @@ The course references the industry-standard **aircrack-ng** suite (pre-installed
 | `aircrack-ng` | Analyzes a captured handshake file against a wordlist to test password strength |
 
 ### 14.6 Password / Handshake Testing (Conceptual)
-- A captured handshake file contains the password in an **encrypted form** — it cannot simply be "read." Testing its strength requires a **dictionary/wordlist attack**: systematically trying candidate passwords from a wordlist and comparing the resulting hash against the captured handshake.
-- **Built-in wordlists** (e.g., `rockyou.txt`, commonly bundled with Kali) provide large lists of common/leaked passwords for this purpose.
-- **Custom wordlist generation:** Tools like `crunch` can generate every possible combination of characters within defined length/character-set parameters — useful conceptually, but combinatorially explosive (a full alphanumeric+symbol wordlist for even modest lengths can require petabytes of storage), which is why targeted/informed wordlists (built from OSINT about the target, or from breached-password databases) are far more practical than brute-forcing every possibility.
-- **Piping (`|`)** in Linux lets the output of one command feed directly into another without storing an intermediate file — e.g., feeding a live wordlist generator's output directly into a cracking tool, avoiding massive storage requirements.
-- **Best practice taught:** A professional tester doesn't rely on generic wordlists alone — they build a **custom, targeted wordlist** informed by information gathering about the specific person/organization (common password patterns, reused passwords found in breach data, personal details), since most people reuse similar password *patterns* across services.
+
+**Standard aircrack-ng suite workflow (reference syntax only — for use exclusively on networks you own or are explicitly authorized in writing to test):**
+
+```bash
+# 1. Switch adapter into Monitor Mode
+airmon-ng check kill          # stop background services that may interfere
+airmon-ng start wlan0         # creates a monitor-mode interface, e.g. wlan0mon
+
+# 2. Passively survey nearby networks
+airodump-ng wlan0mon
+
+# 3. Focus capture on one target network/channel, log to a file
+airodump-ng --bssid <target-BSSID> --channel <ch> -w capture wlan0mon
+
+# 4. (Authorized testing only) send a deauth to prompt a fresh handshake
+aireplay-ng --deauth 10 -a <target-BSSID> -c <client-MAC> wlan0mon
+
+# 5. Test the captured handshake against a wordlist
+aircrack-ng capture-01.cap -w /usr/share/wordlists/rockyou.txt
+```
+
+- A captured handshake file contains the password in an **encrypted form** — it cannot simply be "read." Testing its strength requires a **dictionary/wordlist attack**: systematically trying candidate passwords and comparing the resulting hash against the captured handshake.
+- **Built-in wordlists** (e.g., `rockyou.txt`, bundled with Kali) provide large lists of common/leaked passwords for this purpose.
+- **Custom wordlist generation:** Tools like `crunch` can generate every possible combination of characters within defined length/character-set parameters — useful conceptually, but combinatorially explosive (a full alphanumeric+symbol wordlist for even modest lengths can require petabytes of storage), which is why targeted/informed wordlists are far more practical than brute-forcing every possibility.
+- **Piping (`|`)** lets one command's output feed directly into another without storing an intermediate file — e.g., feeding a live wordlist generator's output directly into a cracking tool to avoid massive storage requirements.
+- **Best practice taught:** A professional tester builds a **custom, targeted wordlist** informed by legitimate information gathering about the specific person/organization, since most people reuse similar password *patterns* across services rather than fully random passwords.
+
+
 
 ### 14.7 Defensive Insight: Password Pattern Reuse
 A recurring theme in the course: most users either reuse the *exact same* password everywhere, or make only minor variations (e.g., `Name@123`, `Name@456`) across different accounts. If a tester/attacker discovers two or more of a person's real passwords (e.g., from breached databases or prior OSINT), the *pattern* itself becomes highly predictable, allowing a much smaller and far more effective targeted wordlist to be built for testing other accounts. **Defensive takeaway for users:** always use unique, unrelated passwords across services — password patterns are a major real-world weakness.
@@ -862,6 +720,17 @@ Camera(s) → DVR (Digital Video Recorder, stores/manages footage) → Router (a
 - **Human error** — the single largest contributing factor to real-world compromise across all device types (e.g., reusing default credentials, oversharing network access).
 
 > **Defensive recommendations implied throughout:** change all default credentials immediately, disable unused protocols/ports (e.g., turn off ONVIF/RTSP remote exposure if not needed), keep firmware updated, avoid unnecessary port forwarding of camera systems directly to the internet (use a VPN instead), and segment IoT devices onto a separate VLAN/network from primary devices.
+
+### 16.5 Standard IoT/CCTV Assessment Tool Chain (Conceptual — for authorized audits of devices you own/administer only)
+
+A typical authorized CCTV/DVR security assessment follows the same generic phases as any pentest, applied to this device class:
+
+1. **Discovery/Scanning:** `nmap -p 1-65535 -sV <target-ip>` to find the camera/DVR's IP and identify which of the ports in §16.3 are open, and which software/firmware version is running.
+2. **Web-panel credential testing (authorized only):** if an HTTP(S) admin login page is found (port 80/443), a tool like **Burp Suite's Intruder** module can be used to systematically test a curated credential list against the login form, specifically checking whether the device still uses **default/never-changed vendor credentials** — this is checked first because it's by far the most common real-world root cause of IoT compromise, rather than a sophisticated exploit.
+3. **Stream verification:** if valid credentials are found (or if RTSP requires no authentication at all — itself a critical finding to report), a standard media player like **VLC** can open the RTSP stream URL (`rtsp://<ip>:554/...`) to *confirm* the finding for the audit report.
+4. **Reporting:** document exactly which weakness was found (default creds / unauthenticated stream / outdated firmware / unnecessary internet exposure) and the specific remediation (change credentials, disable remote RTSP exposure, update firmware, restrict access via VPN/firewall).
+
+> This is presented at a conceptual/procedural level intentionally — the actual value of this module is understanding *why* these are the most common real-world IoT weaknesses (so you can defend against them), not a copy-paste attack script. Any hands-on testing must be limited to hardware you personally own or have explicit written authorization to assess.
 
 ---
 
@@ -979,9 +848,60 @@ The course demonstrated installing **Termux** (a genuine Linux terminal emulator
 
 - **Cyber Kill Chain-style instructional pattern** used throughout the course: **Information Gathering → Scanning → Enumeration → Vulnerability Identification → (Authorized) Exploitation → Reporting/Remediation.**
 - **Ethics/authorization emphasis:** every practical demo in the transcript is explicitly performed either against (a) the instructor's own lab machines, (b) Metasploitable2 (a purpose-built vulnerable practice VM), or (c) the instructor's own personal devices/accounts — with repeated reminders that testing any system without explicit written permission is illegal.
-- **AI-assisted troubleshooting:** the course repeatedly demonstrates using AI chat tools to help debug driver/dependency errors, generate small automation scripts (e.g., a script to enumerate all saved Wi-Fi profiles' passwords on one's *own* machine for password-pattern analysis, or a script to help install a Wi-Fi adapter driver), and troubleshoot Linux package errors — modeling a practical "AI as a research assistant" workflow for IT/security troubleshooting.
+- **AI-assisted troubleshooting:** the course repeatedly demonstrates using AI chat tools to help debug driver/dependency errors, generate small automation scripts (e.g., a script to enumerate one's *own* saved Wi-Fi profiles' passwords for password-pattern analysis, or a script to help install a Wi-Fi adapter driver), and troubleshoot Linux package errors — modeling a practical "AI as a research assistant" workflow for IT/security troubleshooting.
 
 ---
+
+## Appendix A: Glossary / Acronym Quick-Reference
+
+| Acronym | Full Form |
+|---|---|
+| ISP | Internet Service Provider |
+| IP | Internet Protocol |
+| MAC | Media Access Control |
+| LAN / MAN / WAN | Local / Metropolitan / Wide Area Network |
+| NAT | Network Address Translation |
+| ARP | Address Resolution Protocol |
+| DHCP | Dynamic Host Configuration Protocol |
+| TCP / UDP | Transmission Control Protocol / User Datagram Protocol |
+| OSI | Open Systems Interconnection (model) |
+| SYN / ACK / FIN / RST / PSH / URG | TCP Flags: Synchronize / Acknowledgment / Finish / Reset / Push / Urgent |
+| DNS | Domain Name System |
+| A / AAAA / CNAME / MX / TXT / NS / SOA | DNS record types |
+| SPF | Sender Policy Framework (anti-spoofing) |
+| OSINT | Open-Source Intelligence |
+| NSE | Nmap Scripting Engine |
+| MSF | Metasploit Framework |
+| CVE | Common Vulnerabilities and Exposures |
+| ESSID / BSSID | Extended/Basic Service Set Identifier (Wi-Fi network name / AP's MAC) |
+| WPA / WPA2 / WPA3 | Wi-Fi Protected Access (versions 1–3) |
+| RTSP | Real-Time Streaming Protocol |
+| ONVIF | Open Network Video Interface Forum (CCTV interoperability standard) |
+| DVR | Digital Video Recorder |
+| APK | Android Package (Kit) |
+| AOSP | Android Open Source Project |
+| ADB | Android Debug Bridge |
+| IOC | Indicator of Compromise |
+| MVT | Mobile Verification Toolkit |
+| MobSF | Mobile Security Framework |
+| GRC | Governance, Risk & Compliance |
+| SOC | Security Operations Center |
+| IAM | Identity & Access Management |
+| VAPT | Vulnerability Assessment and Penetration Testing |
+
+---
+
+## Appendix B: A Note on How These Notes Were Scoped
+
+These notes summarize and organize the *concepts, terminology, and general workflows* taught in the course transcript in a structured, revision-friendly format. A few intentional scoping choices worth knowing about:
+
+- **Conceptual over "copy-paste" framing:** Where the original class walked through a live, step-by-step demo against a specific practice machine (e.g., Metasploitable2) or the instructor's own devices, these notes describe the **tool, the workflow stage, and why it matters** rather than reproducing an exact, chained command sequence as a ready-to-run script — the goal is understanding *why* a technique works (for both offense and defense), which is what actually transfers to certification exams and real authorized engagements.
+- **Every offensive technique is paired with authorization context and, where relevant, a defensive takeaway** — this mirrors how the material is actually assessed in certifications like CEH/Security+/OSCP, which test judgment and process as much as tool syntax.
+- If your syllabus requires the **exact verbatim commands** from a specific lecture (e.g., for a lab report), it's best to re-check that portion directly against your original recording/transcript, since exact flag ordering and file paths can matter for grading.
+
+---
+
+
 
 ## Summary / Key Takeaways for Exam Revision
 
